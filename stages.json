@@ -1,0 +1,169 @@
+[
+  {
+    "num": 4,
+    "name": "Minimus",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Treble Place",
+      "Alliance",
+      "Hybrid",
+      "Principle"
+    ]
+  },
+  {
+    "num": 5,
+    "name": "Doubles",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Place",
+      "Alliance",
+      "Hybrid",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 6,
+    "name": "Minor",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Treble Place",
+      "Delight",
+      "Surprise",
+      "Alliance",
+      "Hybrid",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 7,
+    "name": "Triples",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Place",
+      "Alliance",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 8,
+    "name": "Major",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Treble Place",
+      "Delight",
+      "Surprise",
+      "Alliance",
+      "Hybrid",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 9,
+    "name": "Caters",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Place",
+      "Surprise",
+      "Alliance",
+      "Principle"
+    ]
+  },
+  {
+    "num": 10,
+    "name": "Royal",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Treble Place",
+      "Delight",
+      "Surprise",
+      "Alliance",
+      "Hybrid",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 11,
+    "name": "Cinques",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Place",
+      "Surprise",
+      "Alliance",
+      "Principle"
+    ]
+  },
+  {
+    "num": 12,
+    "name": "Maximus",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Treble Place",
+      "Delight",
+      "Surprise",
+      "Alliance",
+      "Hybrid",
+      "Differential",
+      "Principle"
+    ]
+  },
+  {
+    "num": 13,
+    "name": "Sextuples",
+    "classes": [
+      "Bob",
+      "Principle"
+    ]
+  },
+  {
+    "num": 14,
+    "name": "Fourteen",
+    "classes": [
+      "Bob",
+      "Place",
+      "Treble Bob",
+      "Delight",
+      "Surprise",
+      "Alliance"
+    ]
+  },
+  {
+    "num": 15,
+    "name": "Septuples",
+    "classes": [
+      "Bob",
+      "Principle"
+    ]
+  },
+  {
+    "num": 16,
+    "name": "Sixteen",
+    "classes": [
+      "Bob",
+      "Treble Bob",
+      "Treble Place",
+      "Delight",
+      "Surprise",
+      "Alliance",
+      "Hybrid"
+    ]
+  }
+]
