@@ -57,13 +57,13 @@
         <h3>
           Method 1
         </h3>
-        <div id="method-info" class="category">
+        <div id="method-info1" class="category method-info">
           
           <div>
-            <label for="stage">
+            <label for="stage1">
               Stage:
             </label>
-            <select id="stage" name="stage" required>
+            <select id="stage1" name="stage1" required class="stage">
               <option value disabled selected>required</option>
               <option value="4">4 - Minimus</option>
               <option value="5">5 - Doubles</option>
@@ -81,56 +81,123 @@
             </select>
           </div>
           <div>
-            <fieldset class="borderless" id="lookupstrat">
+            <fieldset class="borderless" id="lookupstrat1" class="lookupstrat">
               <p class="bold">
                 Lookup strategy:
               </p>
               <ul>
-                <li><label><input type="radio" name="lookup" value="name" checked />search by method name</label></li>
-                <li><label><input type="radio" name="lookup" value="pn" />enter place notation</label></li>
+                <li><label><input type="radio" name="lookup1" value="name" checked />search by method name</label></li>
+                <li><label><input type="radio" name="lookup1" value="pn" />enter place notation</label></li>
                 <!--<li><label><input type="radio" name="lookup" value="complib" />enter complib id</label></li>-->
               </ul>
             </fieldset>
           </div>
           
           
-          <div class="searchstrategy" id="searchbyname">
+          <div class="searchstrategy1" id="searchbyname1">
             <div>
-              <label for="methodClass">
+              <label for="methodClass1">
                 Method class:
               </label>
-              <select id="methodClass" name="methodClass" disabled >
+              <select id="methodClass1" name="methodClass1" class="methodClass" disabled >
               </select>
             </div>
-            <div class="flex" id="methodSearch">
-              <label for="methodName">
+            <div class="flex methodSearch" id="methodSearch1">
+              <label for="methodName1">
                 Search for a method:
               </label>
               <div>
-                <input type="text" id="methodName" name="methodName" placeholder="Select a stage and class to search methods" autocomplete="off" disabled />
-                <ul id="methodList">
+                <input type="text" id="methodName1" name="methodName1" class="methodName" autocomplete="off" disabled />
+                <ul id="methodList1" class="methodList">
                 </ul>
               </div>
             </div>
           </div>
 
-          <div class="searchstrategy hidden" id="searchbypn">
+          <div class="searchstrategy1 hidden" id="searchbypn1">
             <div class="flex">
-              <label for="placeNotation">
+              <label for="placeNotation1">
                 Place notation:
               </label>
-              <input type="text" id="placeNotation" name="placeNotation" minlength="1" autocomplete="off" disabled />
+              <input type="text" id="placeNotation1" name="placeNotation1" class="placeNotation" minlength="1" autocomplete="off" disabled />
             </div>
-            <div class="errors" id="pnerrors">
+            <div class="errors" id="pnerrors1">
               
             </div>
           </div>
-
-          <div class="searchstrategy hidden" id="searchbycomplib">
-            <label for="complibid">
-              Enter a complib.org composition ID:
+          
+        </div>
+        <div class="line"></div>
+        <h3>
+          Method 2
+        </h3>
+        <div id="method-info2" class="category method-info">
+          
+          <div>
+            <label for="stage2">
+              Stage:
             </label>
-            <input type="number" id="complibid" name="complibid" disabled />
+            <select id="stage2" name="stage2" required class="stage">
+              <option value disabled selected>required</option>
+              <option value="4">4 - Minimus</option>
+              <option value="5">5 - Doubles</option>
+              <option value="6">6 - Minor</option>
+              <option value="7">7 - Triples</option>
+              <option value="8">8 - Major</option>
+              <option value="9">9 - Caters</option>
+              <option value="10">10 - Royal</option>
+              <option value="11">11 - Cinques</option>
+              <option value="12">12 - Maximus</option>
+              <option value="13">13 - Sextuples</option>
+              <option value="14">14 - Fourteen</option>
+              <option value="15">15 - Septuples</option>
+              <option value="16">16 - Sixteen</option>
+            </select>
+          </div>
+          <div>
+            <fieldset class="borderless" id="lookupstrat2" class="lookupstrat">
+              <p class="bold">
+                Lookup strategy:
+              </p>
+              <ul>
+                <li><label><input type="radio" name="lookup2" value="name" checked />search by method name</label></li>
+                <li><label><input type="radio" name="lookup2" value="pn" />enter place notation</label></li>
+                <!--<li><label><input type="radio" name="lookup" value="complib" />enter complib id</label></li>-->
+              </ul>
+            </fieldset>
+          </div>
+          
+          
+          <div class="searchstrategy2" id="searchbyname2">
+            <div>
+              <label for="methodClass2">
+                Method class:
+              </label>
+              <select id="methodClass2" name="methodClass2" class="methodClass" disabled >
+              </select>
+            </div>
+            <div class="flex methodSearch" id="methodSearch2">
+              <label for="methodName2">
+                Search for a method:
+              </label>
+              <div>
+                <input type="text" id="methodName2" name="methodName2" class="methodName" autocomplete="off" disabled />
+                <ul id="methodList2" class="methodList">
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="searchstrategy2 hidden" id="searchbypn2">
+            <div class="flex">
+              <label for="placeNotation2">
+                Place notation:
+              </label>
+              <input type="text" id="placeNotation2" name="placeNotation2" class="placeNotation" minlength="1" autocomplete="off" disabled />
+            </div>
+            <div class="errors" id="pnerrors2">
+              
+            </div>
           </div>
           
         </div>
