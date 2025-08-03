@@ -17,19 +17,27 @@ let gridtype = "gridline";
 //strategies for choosing method/comp
 //default "name", others "pn" and "complib"
 var lookup = "name";
+var lookup1 = "name";
+var lookup2 = "name";
 //method stage and class set by form
 var stage = null;
+var stage1 = null;
+var stage2 = null;
 var checkedClass;
+var checkedClass1, checkedClass2;
 
 
 //set of method names matching selected stage and class
 let methodList;
+let methodList1, methodList2;
 
 //form submission
 var queryobj;
 
 var method;
+var method1, method2;
 var rowArray;
+var rowArray1, rowArray2;
 var blueBell;
 
 
