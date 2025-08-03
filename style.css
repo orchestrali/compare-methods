@@ -190,25 +190,25 @@
   
   /* method info */
   
-  select#methodClass {
+  select.methodClass {
     width: 100px;
   }
   
-  input#placeNotation {
+  input.placeNotation {
     flex: 1 335px;
   }
   
-  div#methodSearch div {
+  div.methodSearch div {
     position: relative;
     flex: 1 335px;
   }
   
-  input#methodName {
+  input.methodName {
     width: 99%;
     border-radius: 3px 3px 0 0;
   }
   
-  ul#methodList {
+  ul.methodList {
     margin-left: 1px;
     padding-left: 0;
     width: 98.5%;
@@ -220,7 +220,7 @@
     /*z-index: 3;*/
   }
   
-  ul#methodList li {
+  ul.methodList li {
     display: none;
     padding-left: 10px;
     padding-bottom: 5px;
@@ -230,15 +230,15 @@
     background-color: aliceblue;
   }
   
-  ul#methodList li:last-child {
+  ul.methodList li:last-child {
     border-radius: 0 0 5px 5px;
   }
   
-  ul#methodList li:hover {
+  ul.methodList li:hover {
     background-color: lightsteelblue;
   }
   
-  ul#methodList li.selected {
+  ul.methodList li.selected {
     background-color: lightsteelblue;
   }
 
