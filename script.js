@@ -895,7 +895,7 @@ function buildpaths() {
         let p = buildgridpaths(m.stage, m.hunts, queryobj.gridcolors);
         paths.push(p);
       });
-      console.log(paths);
+      //console.log(paths);
       break;
   }
   return paths;
@@ -1007,7 +1007,7 @@ function drawgrids(titles) {
   let paths = buildpaths();
   paths.forEach((p,j) => {
     let x = j === 0 ? x1+5 : x2+5;
-    for (let i = 0; i < paths.length; i++) {
+    for (let i = 0; i < p.length; i++) {
       drawPath(rowArray[j], p[i], x, grid, yinc);
     }
   });
