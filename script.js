@@ -950,7 +950,7 @@ function drawgrids(titles) {
   let width = 38 + w1 + 64;
   let x1 = 40;
   let x2 = width + 2;
-  width += w2;
+  width += w2 + 60;
   let yinc = queryobj.numbers ? 20 : 12;
   let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc + 30;
 
@@ -958,7 +958,7 @@ function drawgrids(titles) {
   //let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
   let grid = svg.svg($("div.grid:last-child"), null, null, width, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
 
-  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 20px;"});
+  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 14px; font-weight: bold"});
   svg.text(text, 10, 25, titles[0]);
   svg.text(text, x2-15, 25, titles[1]);
   
@@ -975,14 +975,15 @@ function drawgrids(titles) {
 
   rowArray.forEach((arr,j) => {
     let x = j === 0 ? x1 : x2;
+    let xend = x-2 + (j === 0 ? w1 : w2);
     let stedman = arr.find(r => r.name === "new six");
     for (let i = 1; i < arr.length; i++) {
       let y = arr[i].rowNum * yinc + 30;
       if (arr[i].name === "new six") {
-        svg.line(lines, x-2, y, width, y);
+        svg.line(lines, x-2, y, xend, y);
       }
       if (arr[i].name === "leadhead" && !stedman) {
-        svg.line(lines, x-2, y, width, y);
+        svg.line(lines, x-2, y, xend, y);
       }
     }
   });
