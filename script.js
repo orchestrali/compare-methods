@@ -111,8 +111,8 @@ function stagechange(e) {
   //console.log(this.id);
   let id = this.id;
   let which = this.id.slice(5);
-  searches[id] = Number($('select#stage option:checked').val());
-  //console.log("stage: ", stage);
+  searches[id] = Number($('select#stage'+which).val());
+  //console.log("stage: ", searches);
   searches["checkedClass"+which] = "";
 
   let lookup = searches["lookup"+which];
