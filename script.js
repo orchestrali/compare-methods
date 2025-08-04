@@ -681,10 +681,10 @@ function resultsrouter(q1, q2) {
   [q1, q2].forEach(obj => {
     switch (obj.lookup) {
       case "name":
-        title.push(routermethod(obj));
+        titles.push(routermethod(obj));
         break;
       case "pn":
-        title.push(routerpn(obj));
+        titles.push(routerpn(obj));
         break;
     }
   });
