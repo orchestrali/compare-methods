@@ -23,14 +23,13 @@ var stage = null;
 
 var checkedClass;
 
-var search1 = {
-  stage: null,
-  lookup: "name"
+var searches = {
+  stage1: null,
+  stage2: null,
+  lookup1: "name",
+  lookup2: "name"
 };
-var search2 = {
-  stage: null,
-  lookup: "name"
-};
+
 
 
 //set of method names matching selected stage and class
@@ -109,24 +108,26 @@ function getlists() {
 // FORM ADJUSTMENTS - METHOD INFO
 
 function stagechange(e) {
-  console.log(this.id);
-  let which;
-  stage = Number($('select#stage option:checked').val());
+  //console.log(this.id);
+  let id = this.id;
+  let which = this.id.slice(5);
+  searches[id] = Number($('select#stage option:checked').val());
   //console.log("stage: ", stage);
-  checkedClass = "";
+  searches["checkedClass"+which] = "";
 
-  $("div#searchby"+lookup).find(":input").prop("disabled", stage === null);
+  let lookup = searches["lookup"+which];
+  $("div#searchby"+lookup+which).find(":input").prop("disabled", searches[id] === null);
   
   //remove methods from name dropdown
-  $('ul#methodList').children().detach();
-  $("#methodName").val("");
+  $('ul#methodList'+which).children().detach();
+  $("#methodName"+which).val("");
   
   //now getting classes immediately from stages file
-  let classes = stages.find(o => o.num == stage).classes;
+  let classes = stages.find(o => o.num === searches[id]).classes;
   
-  $('select#methodClass').children().detach();
-  $('<option></option>').prop({disabled: true, selected: true}).appendTo('select#methodClass');
-  $('<option></option').text("Plain").val("Plain").appendTo("select#methodClass");
+  $('select#methodClass'+which).children().detach();
+  $('<option></option>').prop({disabled: true, selected: true}).appendTo('select#methodClass'+which);
+  $('<option></option').text("Plain").val("Plain").appendTo("select#methodClass"+which);
   for (var i = 0; i < classes.length; ++i) {
     let text;
     if (["Bob", "Place"].includes(classes[i])) {
@@ -135,12 +136,12 @@ function stagechange(e) {
       text = classes[i];
     }
     //console.log(classes[i]);
-    $('<option></option>').text(text).val(classes[i]).appendTo('select#methodClass');
+    $('<option></option>').text(text).val(classes[i]).appendTo('select#methodClass'+which);
   }
   
   //if the placeholder and class are blank, set the placeholder
-  if ($("#methodName").prop("placeholder") == "" && $("select#methodClass option:checked").text() == "") {
-    $("#methodName").prop("placeholder", "Select a stage and class to search methods");
+  if ($("#methodName"+which).prop("placeholder") == "" && $("select#methodClass"+which+" option:checked").text() == "") {
+    $("#methodName"+which).prop("placeholder", "Select a stage and class to search methods");
   }
   
   //remove blueBell options and add a blank selected option
@@ -148,7 +149,7 @@ function stagechange(e) {
   $('<option>auto</option>').prop({selected: true}).appendTo('select.blueBell');
   blueBell = null;
 
-  blueBellOpts(stage);
+  blueBellOpts(searches[id]);
   
   // BLUE BELL STUFF - include later!
   /*
