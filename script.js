@@ -39,7 +39,7 @@ let methodList;
 var queryobj;
 var query1, query2;
 
-var method;
+var method = [];
 var method1, method2;
 var rowArray;
 var rowArray1, rowArray2;
@@ -630,11 +630,12 @@ function blueBellOpts(stage) {
 //click submit
 function submitform() {
   $(".results").remove();
-  method1 = null;
-  method2 = null;
+  method = [];
+  rowArray = [];
   blueBell = null;
   let form = document.getElementById("formform");
   let data = new FormData(form);
+  queryobj = [];
   query1 = {};
   query2 = {};
   let keys1 = ["stage1","lookup1","methodClass1","methodName1","placeNotation1"];
@@ -664,35 +665,45 @@ function submitform() {
     query1.quantity = "onelead";
     query2.quantity = "onelead";
   }
+
+  if (((query1.methodClass && query1.methodName) || query1.placeNotation) && ((query2.methodClass && query2.methodName) || query2.placeNotation)) {
+    queryobj = [query1, query2];
+    resultsrouter(query1, query2);
+  }
   
   //resultsrouter(queryobj);
 }
 
-function resultsrouter(obj) {
+function resultsrouter(q1, q2) {
   //console.log(obj);
   $("#container").contents().remove();
   //get row array
-  let title;
+  let titles = [];
   //different process for method name or place notation
-  switch (obj.lookup) {
-    case "name":
-      title = routermethod(obj);
-      break;
-    case "pn":
-      title = routerpn(obj);
-      break;
-  }
+  [q1, q2].forEach(obj => {
+    switch (obj.lookup) {
+      case "name":
+        title.push(routermethod(obj));
+        break;
+      case "pn":
+        title.push(routerpn(obj));
+        break;
+    }
+  });
+  
+  
   //do stuff with it
   
   
-  if (title) {
+  if (titles[0] && titles[1]) {
     //console.log(method.hunts);
     
-    routergrid(obj, title);
+    //routergrid(obj, title);
     
     
   } else {
-    let text = obj.lookup === "name" ? "Method not found" : "Problem with place notation";
+    let text = "problem with method or place notation";
+      //obj.lookup === "name" ? "Method not found" : "Problem with place notation";
     $("#container").append(`<h4>${text}</h4>`);
   }
 }
@@ -718,15 +729,16 @@ function routergrid(obj, title) {
 }
 
 function routermethod(obj) {
-  method = findmethod(obj);
+  let m = findmethod(obj);
   let title;
-  if (method) {
+  if (m) {
     let stagename = getStageName(obj.stage);
-    if (method.name === "Stedman "+stagename) {
-      method.stedman = true;
+    if (m.name === "Stedman "+stagename) {
+      m.stedman = true;
     }
-    title = method.name; //+ " - plain course";
-    buildrowarr();
+    title = m.name; //+ " - plain course";
+    method.push(m);
+    buildrowarr(method.length-1);
   }
   return title;
 }
@@ -741,18 +753,19 @@ function routerpn(obj) {
     let pn = res[1];
     let m = findbypn(pn, obj.stage);
     if (m) {
-      method = m;
+      method.push(m);
       title = method.name;
     } else {
-      method = {
+      method.push({
         stage: obj.stage,
         leadLength: pn.length,
         plainPN: pn,
 				hunts: findhunts(pn, obj.stage)
-      };
+      });
       title = obj.placeNotation;
     }
-    buildrowarr();
+    let i = method.length-1;
+    buildrowarr(i);
   }
   return title;
 }
@@ -768,23 +781,25 @@ function findmethod(obj) {
 }
 
 //build row array
-function buildrowarr() {
-  switch (queryobj.quantity) {
+function buildrowarr(i) {
+  let q = queryobj[i];
+  let m = method[i];
+  switch (q.quantity) {
     case "onelead":
-      rowArray = buildRows(rounds(method.stage), method.plainPN, 1);
-      rowArray.unshift({rowNum: 0, bells: rounds(method.stage)});
+      rowArray[i] = buildRows(rounds(m.stage), m.plainPN, 1);
+      rowArray[i].unshift({rowNum: 0, bells: rounds(m.stage)});
       break;
     case "touch":
       // stuff here later
       break;
     default:
-      buildplaincourse(method.stage, method.plainPN);
+      rowArray[i] = buildplaincourse(m.stage, m.plainPN);
   }
   
-  if (method.stedman) {
-    addLHs(6, 3, "new six");
+  if (m.stedman) {
+    addLHs(rowArray[i], 6, 3, "new six");
   }
-  addLHs(method.leadLength, 0, "leadhead");
+  addLHs(rowArray[i], m.leadLength, 0, "leadhead");
 }
 
 //draw stuff
@@ -1270,7 +1285,7 @@ function testlastpn(pn) {
   return res;
 }
 
-function addLHs(l, start, name) {
+function addLHs(rowArray, l, start, name) {
   for (let i = 0; i < rowArray.length; i+=l) {
     if (rowArray[start+i]) {
       rowArray[start+i].name = name;
@@ -1312,7 +1327,7 @@ function buildRows(prevRow, placeNotArray, rowNum) {
 function buildplaincourse(stage, pn) {
   let start = rounds(stage);
   let roundstr = rowStr(start);
-  rowArray = [{rowNum: 0, bells: start}];
+  let rowArray = [{rowNum: 0, bells: start}];
   let lastrow = rounds(stage);
   let laststr;
   let lead;
@@ -1324,7 +1339,7 @@ function buildplaincourse(stage, pn) {
     laststr = rowStr(lastrow);
     num += pn.length;
   } while (laststr != roundstr);
-  
+  return rowArray;
 }
 
 const placeNames = [{num: 1, name: "lead"}, {num: 2, name: "2nds"}, {num: 3, name: "3rds"}];
