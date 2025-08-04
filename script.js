@@ -203,7 +203,7 @@ function changegridtype() {
 
 function pnkeyup() {
   let id = this.id;
-  let num = id.slice(id.length-2);
+  let num = id.slice(id.length-1);
   $("#pnerrors"+num).text("");
   let allowed = ".,x-&+";
   let errs = [];
@@ -268,8 +268,8 @@ function pnkeyup() {
 
 function classchange() {
   let id = this.id;
-  let num = id.slice(id.length-2);
-  let cc = $('select#methodClass option:checked').val();
+  let num = id.slice(id.length-1);
+  let cc = $('select#methodClass'+num+' option:checked').val();
   searches["checkedClass"+num] = cc;
   let stage = searches["stage"+num];
   //remove methods from dropdown
@@ -299,7 +299,7 @@ function searchWarning(n) {
 
 function methodnameclick(e) {
   let id = this.id;
-  let num = id.slice(id.length-2);
+  let num = id.slice(id.length-1);
   //body click causes methodList to be hidden
   hidenamelist(num);
 
@@ -446,7 +446,7 @@ function methodNames(stage, checkedClass) {
 
 function methodnamekeyup(event) {
   let id = this.id;
-  let num = id.slice(id.length-2);
+  let num = id.slice(id.length-1);
   
   hidenamelist(num);
   
