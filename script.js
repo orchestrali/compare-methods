@@ -635,7 +635,7 @@ function submitform() {
   blueBell = null;
   let form = document.getElementById("formform");
   let data = new FormData(form);
-  queryobj = [];
+  queryobj = {};
   query1 = {};
   query2 = {};
   let keys1 = ["stage1","lookup1","methodClass1","methodName1","placeNotation1"];
@@ -650,24 +650,22 @@ function submitform() {
       query2[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
     } else {
       if (key[1] === "colors") {
-        query1.gridcolors = true;
-        query2.gridcolors = true;
+        queryobj.gridcolors = true;
       } else {
-        query1[key[0]] = key[1];
-        query2[key[0]] = key[1];
+        queryobj[key[0]] = key[1];
       }
     }
     
     
   }
 
-  if (query1.gridtype === "gridgrid") {
-    query1.quantity = "onelead";
-    query2.quantity = "onelead";
+  if (queryobj.gridtype === "gridgrid") {
+    queryobj.quantity = "onelead";
   }
 
   if (((query1.methodClass && query1.methodName) || query1.placeNotation) && ((query2.methodClass && query2.methodName) || query2.placeNotation)) {
-    queryobj = [query1, query2];
+    queryobj.method1 = query1;
+    queryobj.method2 = query2;
     resultsrouter(query1, query2);
   }
   
@@ -699,7 +697,7 @@ function resultsrouter(q1, q2) {
     //console.log(method.hunts);
     
     //routergrid(obj, title);
-    
+    drawgrids(titles);
     
   } else {
     let text = "problem with method or place notation";
@@ -782,9 +780,8 @@ function findmethod(obj) {
 
 //build row array
 function buildrowarr(i) {
-  let q = queryobj[i];
   let m = method[i];
-  switch (q.quantity) {
+  switch (queryobj.quantity) {
     case "onelead":
       rowArray[i] = buildRows(rounds(m.stage), m.plainPN, 1);
       rowArray[i].unshift({rowNum: 0, bells: rounds(m.stage)});
@@ -819,6 +816,7 @@ function drawNumbers(arr, x, parent) {
   }
 }
 
+//input bell is object with keys bell, weight, color
 function drawPath(arr, bell, x, parent, yinc) {
   let g = drawElement("group", [parent, {style: "stroke:"+bell.color+"; stroke-width:"+bell.weight+"; fill:none;"}]);
   let num = bell.bell;
@@ -943,6 +941,48 @@ function drawgrid(pbs) {
     //svg.circle($("#containersvg"), 50, 50, 10, {fill: "blue"});
     drawgridsvg(rowArray, paths, width, x);
   }
+}
+
+function drawgrids(titles) {
+  let w1 = queryobj.method1.stage*16;
+  let w2 = queryobj.method2.stage*16;
+  let width = 38 + w1 + 64;
+  let x1 = 40;
+  let x2 = width + 2;
+  width += w2;
+  let yinc = queryobj.numbers ? 20 : 12;
+  let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc;
+
+  $("#container").append('<div class="grid"></div>');
+  let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
+  let grid = svg.svg($("div.grid:last-child"), null, null, width, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
+
+  //add stuff to the titlesvg so it's aligned!
+  
+  if (queryobj.numbers) {
+    drawNumbers(rowArray[0], x1, grid);
+    drawNumbers(rowArray[1], x2, grid);
+  }
+
+  //need to sort out paths
+
+  let lines = svg.group(grid, {style: "stroke: #111; stroke-width:1;"});
+  svg.line(lines, x1-2, yinc, x1-2+w1, yinc);
+  svg.line(lines, x2-2, yinc, x2-2+w2, yinc);
+
+  rowArray.forEach((arr,j) => {
+    let x = j === 0 ? x1 : x2;
+    let stedman = arr.find(r => r.name === "new six");
+    for (let i = 1; i < arr.length; i++) {
+      let y = arr[i].rowNum * yinc;
+      if (arr[i].name === "new six") {
+        svg.line(lines, x-2, y, width, y);
+      }
+      if (arr[i].name === "leadhead" && !stedman) {
+        svg.line(lines, x-2, y, width, y);
+      }
+    }
+  });
 }
 
 function drawgridsvg(arr, paths, width, x) {
