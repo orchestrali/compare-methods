@@ -68,7 +68,7 @@ $(function(){
   $(".placeNotation").on("keyup", pnkeyup);
 	
   $('.methodClass').change(classchange);
-  $("#methodName").click(methodnameclick);
+  $(".methodName").click(methodnameclick);
   //when a method in the dropdown list is clicked on, make it the methodName value and hide the list
   $(".methodList").on("click", "li", function(e) {
     //console.log('method clicked 1');
@@ -79,7 +79,7 @@ $(function(){
     $(this).siblings().detach();
     e.stopPropagation();
   });
-  $("#methodName").on("keyup", methodnamekeyup);
+  $(".methodName").on("keyup", methodnamekeyup);
 
   $("#gridtype").change(changegridtype);
   
@@ -285,35 +285,40 @@ function classchange() {
   //toggleHunts();
 }
 
-function hidenamelist() {
+function hidenamelist(n) {
   $(document.body).on('click.menuHide', function(){
     var $body = $(this);
-    $("#methodList li").hide();
+    $("#methodList"+n+" li").hide();
     $body.off('click.menuHide');
   });
 }
 
-function searchWarning() {
-  $('<li id="warning"></li>').text("Select a stage and class to search methods").css("display", "list-item").appendTo($("#methodList"));
+function searchWarning(n) {
+  $('<li id="warning'+n+'"></li>').text("Select a stage and class to search methods").css("display", "list-item").appendTo($("#methodList"+n));
 }
 
 function methodnameclick(e) {
+  let id = this.id;
+  let num = id.slice(id.length-2);
   //body click causes methodList to be hidden
-  hidenamelist();
+  hidenamelist(num);
+
+  let stage = searches["stage"+num];
+  let cc = searches["checkedClass"+num];
   
   //don't trigger body click
   e.stopPropagation();
   
   //check if stage and class are selected and display warning if either isn't
-  if (stage == "" || checkedClass == "") {
-    if ($('li#warning').length == 0) {
-      searchWarning();
-    } else if ($('li#warning').length == 1) {
-      $('li#warning').css("display", "list-item");
+  if (stage == "" || cc == "") {
+    if ($('li#warning'+num).length == 0) {
+      searchWarning(num);
+    } else if ($('li#warning'+num).length == 1) {
+      $('li#warning'+num).css("display", "list-item");
     }
   }
   
-  $("#methodList li").css("display", "list-item");
+  $("#methodList"+num+" li").css("display", "list-item");
 }
 
 function checkname(name, val) {
@@ -392,28 +397,28 @@ function getMethods(methods, howMany) {
 }
 
 //build the list items
-function buildList(methods, display) {
+function buildList(methods, display, n) {
   for (var j = 0; j < methods.length; j++) {
-    $('<li></li>').text(methods[j]).css("display", display).appendTo($("#methodList"));
+    $('<li></li>').text(methods[j]).css("display", display).appendTo($("#methodList"+n));
   }
 }
 
-function filterList(value) {
+function filterList(value,n) {
   //console.log("filtering items");
-  $("#methodList li").filter(function() {
+  $("#methodList"+n+" li").filter(function() {
     let text = $(this).text().toLowerCase();
     
     $(this).toggle(checkname(text, value));
   });
 }
 
-function removeItems(value) {
+function removeItems(value,n) {
   //console.log('removing items');
-  $("#methodList li").filter(function() {
+  $("#methodList"+n+" li").filter(function() {
     let text = $(this).text().toLowerCase();
     return (!checkname(text, value));
   }).remove();
-  $("#methodList li").css("display", "list-item");
+  $("#methodList"+n+" li").css("display", "list-item");
 }
 
 //search json methodNames file, returns array of arrays with methods
@@ -440,20 +445,24 @@ function methodNames(stage, checkedClass) {
 }
 
 function methodnamekeyup(event) {
-  hidenamelist();
+  let id = this.id;
+  let num = id.slice(id.length-2);
   
-  stage = Number($('select#stage option:checked').val());
-  checkedClass = $('select#methodClass option:checked').val();
+  hidenamelist(num);
+  
+  let stage = searches["stage"+num];
+  let cc = searches["checkedClass"+num];
+  let methodList = searches["methodList"+num];
   
   //value = whatever's been typed
   let value = $(this).val().toLowerCase();
   let altval = respell(value);
   //warn people to pick stage and class if they haven't
-  if (stage == "" || checkedClass == "") {
-    if ($('li#warning').length == 0) {
-      searchWarning();
-    } else if ($('li#warning').length == 1) {
-      $('li#warning').css("display", "list-item");
+  if (stage == "" || cc == "") {
+    if ($('li#warning'+num).length == 0) {
+      searchWarning(num);
+    } else if ($('li#warning'+num).length == 1) {
+      $('li#warning'+num).css("display", "list-item");
     }
   } else if (/^[^\s]/.test(value)) {
     
@@ -467,11 +476,11 @@ function methodnamekeyup(event) {
     }
     
     //remove the message to pick stage and class
-    $("li#warning").remove();
+    $("li#warning"+num).remove();
     //remove message about unrecognized character
-    $("li#badChar").remove();
+    $("li#badChar"+num).remove();
     //remove message about no methods
-    $("li#noMethods").remove();
+    $("li#noMethods"+num).remove();
     
     let methods = [];
     let numMatch = 0;
@@ -500,23 +509,23 @@ function methodnamekeyup(event) {
     
     //if no methods match, say so
     if (numMatch == 0) {
-      $("#methodList li").remove();
-      $('<li id="noMethods"></li>').text("no methods match search").css("display", "list-item").appendTo($("#methodList"));
+      $("#methodList"+num+" li").remove();
+      $('<li id="noMethods'+num+'"></li>').text("no methods match search").css("display", "list-item").appendTo($("#methodList"+num));
     } else {
       //if some methods match search
       
       //if nothing's been added to the methodList yet
-      if ($("#methodList li").length == 0) {
+      if ($("#methodList"+num+" li").length == 0) {
 
         //if there are fewer than 16 methods, just add all of them
         if (numMethods < 16) {
-          buildList(methods, "none");
+          buildList(methods, "none", num);
           //apply the filter next
-          filterList(value);
+          filterList(value, num);
         } else {
           //if there are <16 methods that match, display them all
           if (methods.length < 16) {
-            buildList(methods, "list-item");
+            buildList(methods, "list-item", num);
           } else {
             let methodSet = [];
             let numMethods = 15;
@@ -527,7 +536,7 @@ function methodnamekeyup(event) {
               numMethods -= 1;
             }
             methodSet = methodSet.concat(getMethods(methods, numMethods));
-            buildList(methodSet, "list-item");
+            buildList(methodSet, "list-item", num);
           }
         } 
       } else {
@@ -535,8 +544,8 @@ function methodnamekeyup(event) {
         //var methods will already be updated with new search, if there were ≥ 16 in class
         //check how many current items match the new search
         let currentMatch = [];
-        for (let i = 1; i <= $("#methodList li").length; i++) {
-          let text = $("#methodList li:nth-child("+ i + ")").text();
+        for (let i = 1; i <= $("#methodList"+num+" li").length; i++) {
+          let text = $("#methodList"+num+" li:nth-child("+ i + ")").text();
           if (checkname(text.toLowerCase(), value)) {
             currentMatch.push(text);
           }
@@ -545,7 +554,7 @@ function methodnamekeyup(event) {
         //console.log('methods that still match search:', currentMatch)
         //if fewer than 15 current methods match the new search, remove the ones that don't match and add new
         if (currentMatch.length < 15) {
-          removeItems(value);
+          removeItems(value, num);
           //console.log("method array length 1", methods.length);
           //remove the current list items from the method array
           for (let i = 0; i < currentMatch.length; ++i) {
@@ -558,10 +567,10 @@ function methodnamekeyup(event) {
           //get new methods from the pruned array
           let methodSet = getMethods(methods, 15-currentMatch.length);
           //console.log(methodSet);
-          buildList(methodSet, "list-item");
+          buildList(methodSet, "list-item", num);
 
         } else {
-          $("#methodList li").css("display", "list-item");
+          $("#methodList"+num+" li").css("display", "list-item");
         }
         
       }
@@ -570,37 +579,37 @@ function methodnamekeyup(event) {
       //down arrow
       if (event.which == 40) {
         //console.log($("#methodList li.selected"));
-        if ($("#methodList li.selected")[0]) {
+        if ($("#methodList"+num+" li.selected")[0]) {
           //console.log($("#methodList li.selected").next());
-          $("#methodList li.selected").nextAll().filter(function (index) {
+          $("#methodList"+num+" li.selected").nextAll().filter(function (index) {
             return $(this).css("display") == "list-item";
           }).first().addClass("selected");
 
-          $("#methodList li.selected:first").removeClass("selected"); 
+          $("#methodList"+num+" li.selected:first").removeClass("selected"); 
         } else {
-          $("#methodList li").filter(function (index) {
+          $("#methodList"+num+" li").filter(function (index) {
             return $(this).css("display") == "list-item";
           }).first().addClass("selected");
         }
         //up arrow
       } else if (event.which == 38) {
-        if ($("#methodList li.selected")[0]) {
-          $("#methodList li.selected").prevAll().filter(function (index) {
+        if ($("#methodList"+num+" li.selected")[0]) {
+          $("#methodList"+num+" li.selected").prevAll().filter(function (index) {
             return $(this).css("display") == "list-item";
           }).last().addClass("selected");
-          $("#methodList li.selected:last").removeClass("selected"); 
+          $("#methodList"+num+" li.selected:last").removeClass("selected"); 
         }
         //enter key
       } else if (event.which == 13) {
-        $("#methodName").val($("li.selected").text());
+        $("#methodName"+num).val($("li.selected").text());
 
-        $("#methodList li").hide();
+        $("#methodList"+num+" li").hide();
       }
       
     }
     
   } else { // methodName value starts with whitespace char
-    $("#methodList li").remove(); 
+    $("#methodList"+num+" li").remove(); 
   }
   
 }
