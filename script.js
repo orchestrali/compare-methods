@@ -895,6 +895,8 @@ function buildpaths() {
         let p = buildgridpaths(m.stage, m.hunts, queryobj.gridcolors);
         paths.push(p);
       });
+      console.log(paths);
+      break;
   }
   return paths;
 }
