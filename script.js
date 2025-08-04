@@ -17,14 +17,20 @@ let gridtype = "gridline";
 //strategies for choosing method/comp
 //default "name", others "pn" and "complib"
 var lookup = "name";
-var lookup1 = "name";
-var lookup2 = "name";
+
 //method stage and class set by form
 var stage = null;
-var stage1 = null;
-var stage2 = null;
+
 var checkedClass;
-var checkedClass1, checkedClass2;
+
+var search1 = {
+  stage: null,
+  lookup: "name"
+};
+var search2 = {
+  stage: null,
+  lookup: "name"
+};
 
 
 //set of method names matching selected stage and class
@@ -56,7 +62,7 @@ $(function(){
     $(".arrow").toggleClass("rotate");
   });
   
-  $("#stage").change(stagechange);
+  $(".stage").change(stagechange);
 
   $("#lookupstrat").change(changestrategy);
 	
@@ -65,10 +71,12 @@ $(function(){
   $('#methodClass').change(classchange);
   $("#methodName").click(methodnameclick);
   //when a method in the dropdown list is clicked on, make it the methodName value and hide the list
-  $("#methodList").on("click", "li", function(e) {
+  $(".methodList").on("click", "li", function(e) {
     //console.log('method clicked 1');
-    $("#methodName").val($(this).text());
-    $("#methodList li").hide();
+    let list = $(this).parent().attr("id");
+    let which = list.slice(list.length-2);
+    $("#methodName"+which).val($(this).text());
+    $("#methodList"+which+" li").hide();
     $(this).siblings().detach();
     e.stopPropagation();
   });
@@ -100,7 +108,9 @@ function getlists() {
 
 // FORM ADJUSTMENTS - METHOD INFO
 
-function stagechange() {
+function stagechange(e) {
+  console.log(this.id);
+  let which;
   stage = Number($('select#stage option:checked').val());
   //console.log("stage: ", stage);
   checkedClass = "";
