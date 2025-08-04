@@ -73,7 +73,7 @@ $(function(){
   $(".methodList").on("click", "li", function(e) {
     //console.log('method clicked 1');
     let list = $(this).parent().attr("id");
-    let which = list.slice(list.length-2);
+    let which = list.slice(list.length-1);
     $("#methodName"+which).val($(this).text());
     $("#methodList"+which+" li").hide();
     $(this).siblings().detach();
