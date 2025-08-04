@@ -34,10 +34,10 @@ var searches = {
 
 //set of method names matching selected stage and class
 let methodList;
-let methodList1, methodList2;
 
 //form submission
 var queryobj;
+var query1, query2;
 
 var method;
 var method1, method2;
@@ -148,8 +148,12 @@ function stagechange(e) {
   $('select.blueBell').children().detach();
   $('<option>auto</option>').prop({selected: true}).appendTo('select.blueBell');
   blueBell = null;
+  let min = searches[id];
+  if (searches.stage1 && searches.stage2) {
+    min = Math.min(searches.stage1, searches.stage2);
+  }
 
-  blueBellOpts(searches[id]);
+  blueBellOpts(min);
   
   // BLUE BELL STUFF - include later!
   /*
@@ -626,31 +630,42 @@ function blueBellOpts(stage) {
 //click submit
 function submitform() {
   $(".results").remove();
-  method = null;
+  method1 = null;
+  method2 = null;
   blueBell = null;
   let form = document.getElementById("formform");
   let data = new FormData(form);
-  queryobj = {type: type};
+  query1 = {};
+  query2 = {};
+  let keys1 = ["stage1","lookup1","methodClass1","methodName1","placeNotation1"];
+  let keys2 = ["stage2","lookup2","methodClass2","methodName2","placeNotation2"];
   
   for (let key of data.entries()) {
-    switch (key[0]) {
-      case "stage":
-        queryobj[key[0]] = Number(key[1]);
-        break;
-      case "gridcolors":
-        if (key[1] === "colors") queryobj.gridcolors = true;
-        break;
-      default:
-        queryobj[key[0]] = key[1];
+    let i1 = keys1.indexOf(key[0]);
+    let i2 = keys2.indexOf(key[0]);
+    if (i1 > -1) {
+      query1[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
+    } else if (i2 > -1) {
+      query2[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
+    } else {
+      if (key[1] === "colors") {
+        query1.gridcolors = true;
+        query2.gridcolors = true;
+      } else {
+        query1[key[0]] = key[1];
+        query2[key[0]] = key[1];
+      }
     }
+    
     
   }
 
-  if (queryobj.type === "grid" && queryobj.gridtype === "gridgrid") {
-    queryobj.quantity = "onelead";
+  if (query1.gridtype === "gridgrid") {
+    query1.quantity = "onelead";
+    query2.quantity = "onelead";
   }
   
-  resultsrouter(queryobj);
+  //resultsrouter(queryobj);
 }
 
 function resultsrouter(obj) {
