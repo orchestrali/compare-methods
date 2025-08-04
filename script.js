@@ -1337,7 +1337,7 @@ function chooseworking(n, method) {
   method.hunts.forEach(b => used.push(b));
   let bell;
   if (used.length < method.stage) {
-    let pal = testlastpn(method.plainPN[method.plainPN.length-1]);
+    let pal = testlastpn(method.plainPN[method.plainPN.length-1], method.stage);
     
     if (pal && !used.includes(pal) && (n === 1 || method.pbOrder.length === 1)) {
       bell = [pal];
@@ -1350,7 +1350,7 @@ function chooseworking(n, method) {
 }
 
 //test final place notation
-function testlastpn(pn) {
+function testlastpn(pn, stage) {
   let res;
   if (stage%2 === 0) {
     if (pn.length === 2 && pn[0] === 1) {
