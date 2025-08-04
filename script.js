@@ -63,11 +63,11 @@ $(function(){
   
   $(".stage").change(stagechange);
 
-  $("#lookupstrat").change(changestrategy);
+  $(".lookupstrat").change(changestrategy);
 	
-  $("#placeNotation").on("keyup", pnkeyup);
+  $(".placeNotation").on("keyup", pnkeyup);
 	
-  $('#methodClass').change(classchange);
+  $('.methodClass').change(classchange);
   $("#methodName").click(methodnameclick);
   //when a method in the dropdown list is clicked on, make it the methodName value and hide the list
   $(".methodList").on("click", "li", function(e) {
@@ -172,14 +172,17 @@ function stagechange(e) {
 
 //switch between method name, pn, or complib
 function changestrategy() {
-  let prev = lookup;
-  lookup = $("#lookupstrat input:checked").val();
+  let id = this.id;
+  let num = id.slice(6);
+  let prev = searches[id]+num;
+  searches[id] = $("#"+id+" input:checked").val();
+  let current = searches[id]+num;
   
-  $("div.searchstrategy").find(":input").prop("disabled", true);
-  $("div#searchby"+lookup).find(":input").prop("disabled", stage === null);
+  $("div.searchstrategy"+num).find(":input").prop("disabled", true);
+  $("div#searchby"+current).find(":input").prop("disabled", searches["stage"+num] === null);
 
   $("div#searchby"+prev).addClass("hidden");
-  $("div#searchby"+lookup).removeClass("hidden");
+  $("div#searchby"+current).removeClass("hidden");
   //$("div#searchby"+prev).slideUp(600, () => {
   //  $("div#searchby"+lookup).slideDown(600);
   //});
@@ -199,7 +202,9 @@ function changegridtype() {
 }
 
 function pnkeyup() {
-  $("#pnerrors").text("");
+  let id = this.id;
+  let num = id.slice(id.length-2);
+  $("#pnerrors"+num).text("");
   let allowed = ".,x-&+";
   let errs = [];
   let val = $(this).val();
@@ -212,6 +217,7 @@ function pnkeyup() {
       return c;
     }
   });
+  let stage = searches["stage"+num];
 
   //stage needs to be specified
   if (!stage) {
@@ -246,7 +252,7 @@ function pnkeyup() {
   if (errs.length) {
     //display them
     errs.forEach(e => {
-      $("#pnerrors").append(`<p>${e}</p>`);
+      $("#pnerrors"+num).append(`<p>${e}</p>`);
     });
   } else {
     let res = pnlexer(chars.join(""));
@@ -254,26 +260,28 @@ function pnkeyup() {
     let next = pnNumJoin(res[1]);
     if (next[0]) {
     //display errors
-      $("#pnerrors").append(`<p>${next[0]}</p>`);
+      $("#pnerrors"+num).append(`<p>${next[0]}</p>`);
     }
   }
 	
 }
 
 function classchange() {
-  stage = Number($('select#stage option:checked').val());
-  checkedClass = $('select#methodClass option:checked').val();
-  
+  let id = this.id;
+  let num = id.slice(id.length-2);
+  let cc = $('select#methodClass option:checked').val();
+  searches["checkedClass"+num] = cc;
+  let stage = searches["stage"+num];
   //remove methods from dropdown
-  $('ul#methodList').children().detach();
+  $('ul#methodList'+num).children().detach();
 
   //if there's a stage make the search placeholder blank
   if (stage) {
-    $("#methodName").prop("placeholder", "");
-    methodList = methodNames(stage, checkedClass);
+    $("#methodName"+num).prop("placeholder", "");
+    searches["methodList"+num] = methodNames(stage, cc);
   }
 
-  $("#methodName").val("");
+  $("#methodName"+num).val("");
   //toggleHunts();
 }
 
