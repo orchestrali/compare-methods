@@ -810,7 +810,7 @@ function drawNumbers(arr, x, parent) {
     for (let j = 0; j < arr[i].bells.length; j++) {
       let number = arr[i].bells[j];
       let fill = i === 0 && arr[i].rowNum > 0 ? "#888" : null;
-      let text = drawElement("text", [g, x+j*16, 16+i*20, places[number-1]]);
+      let text = drawElement("text", [g, x+j*16, 46+i*20, places[number-1]]);
       if (fill) $(text).css("fill", fill);
     }
   }
@@ -943,6 +943,7 @@ function drawgrid(pbs) {
   }
 }
 
+//THIS ONE
 function drawgrids(titles) {
   let w1 = queryobj.method1.stage*16;
   let w2 = queryobj.method2.stage*16;
@@ -951,13 +952,15 @@ function drawgrids(titles) {
   let x2 = width + 2;
   width += w2;
   let yinc = queryobj.numbers ? 20 : 12;
-  let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc;
+  let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc + 30;
 
   $("#container").append('<div class="grid"></div>');
-  let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
+  //let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
   let grid = svg.svg($("div.grid:last-child"), null, null, width, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
 
-  //add stuff to the titlesvg so it's aligned!
+  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 20px;"});
+  svg.text(text, 10, 25, titles[0]);
+  svg.text(text, x2-15, 25, titles[1]);
   
   if (queryobj.numbers) {
     drawNumbers(rowArray[0], x1, grid);
@@ -967,14 +970,14 @@ function drawgrids(titles) {
   //need to sort out paths
 
   let lines = svg.group(grid, {style: "stroke: #111; stroke-width:1;"});
-  svg.line(lines, x1-2, yinc, x1-2+w1, yinc);
-  svg.line(lines, x2-2, yinc, x2-2+w2, yinc);
+  svg.line(lines, x1-2, yinc+30, x1-2+w1, yinc+30);
+  svg.line(lines, x2-2, yinc+30, x2-2+w2, yinc+30);
 
   rowArray.forEach((arr,j) => {
     let x = j === 0 ? x1 : x2;
     let stedman = arr.find(r => r.name === "new six");
     for (let i = 1; i < arr.length; i++) {
-      let y = arr[i].rowNum * yinc;
+      let y = arr[i].rowNum * yinc + 30;
       if (arr[i].name === "new six") {
         svg.line(lines, x-2, y, width, y);
       }
