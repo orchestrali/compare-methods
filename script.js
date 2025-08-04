@@ -877,11 +877,13 @@ function buildpaths() {
     case "gridline":
       //figure out blueBell
       let bb;
+      let b;
       if (queryobj.blueBell != "auto") {
         bb = [Number(queryobj.blueBell)];
+        b = true;
       }
       method.forEach(m => {
-        if (!bb) {
+        if (!b) {
           bb = chooseworking(2, m);
         }
         let p = buildpaths2(bb, m.hunts);
