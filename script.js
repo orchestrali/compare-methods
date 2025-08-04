@@ -696,7 +696,7 @@ function resultsrouter(q1, q2) {
   if (titles[0] && titles[1]) {
     //console.log(method.hunts);
     
-    //routergrid(obj, title);
+    
     drawgrids(titles);
     
   } else {
@@ -705,6 +705,7 @@ function resultsrouter(q1, q2) {
     $("#container").append(`<h4>${text}</h4>`);
   }
 }
+
 
 function routergrid(obj, title) {
   //different grid display options
@@ -760,6 +761,7 @@ function routerpn(obj) {
         plainPN: pn,
 				hunts: findhunts(pn, obj.stage)
       });
+      //need to get pbOrder too
       title = obj.placeNotation;
     }
     let i = method.length-1;
@@ -821,7 +823,7 @@ function drawPath(arr, bell, x, parent, yinc) {
   let g = drawElement("group", [parent, {style: "stroke:"+bell.color+"; stroke-width:"+bell.weight+"; fill:none;"}]);
   let num = bell.bell;
   let current = arr[0].bells.indexOf(num);
-  let path = "M "+(current*16+x)+" "+(yinc/2);
+  let path = "M "+(current*16+x)+" "+(yinc/2+30);
   for (let i = 1; i < arr.length; i++) {
     let index = arr[i].bells.indexOf(num);
     if (index === current) {
@@ -836,6 +838,7 @@ function drawPath(arr, bell, x, parent, yinc) {
   drawElement("path", [g, path]);
 }
 
+//using this for grid paths
 //stage, huntbells, whether working bells should be different colors
 function buildgridpaths(n,hunts,color) {
   let colors = gridcolorsets(n-hunts.length);
@@ -856,6 +859,7 @@ function buildgridpaths(n,hunts,color) {
   return arr;
 }
 
+//using this
 function gridcolorsets(n) {
   let colors = ["a4e0b0", "#71d184", "#3fa654", "#007317", "teal", "lightseagreen", "#8adfef", "#6ab9ef", "#658de6", "#4c5ced", "#1a1ad6", "#000080", "indigo", "#8a2be2", "#9f7be2"];
   let order = [6,0,8,1,13,4,11,7,2,5,14,12];
@@ -866,11 +870,39 @@ function gridcolorsets(n) {
   return colors;
 }
 
-function buildpaths2(bb) {
+function buildpaths() {
+  let paths = [];
+
+  switch (queryobj.gridtype) {
+    case "gridline":
+      //figure out blueBell
+      let bb;
+      if (queryobj.blueBell != "auto") {
+        bb = [Number(queryobj.blueBell)];
+      }
+      method.forEach(m => {
+        if (!bb) {
+          bb = chooseworking(2, m);
+        }
+        let p = buildpaths2(bb, m.hunts);
+        paths.push(p);
+      });
+      break;
+    case "gridgrid":
+      method.forEach(m => {
+        let p = buildgridpaths(m.stage, m.hunts, queryobj.gridcolors);
+        paths.push(p);
+      });
+  }
+  return paths;
+}
+
+//using this for line paths
+function buildpaths2(bb, hunts) {
   let paths = [];
   let used = [];
-  if (method.hunts) {
-    method.hunts.forEach(n => {
+  if (hunts) {
+    hunts.forEach(n => {
       let path = {
         bell: n,
         weight: bb.includes(n) ? 2 : 1,
@@ -968,6 +1000,13 @@ function drawgrids(titles) {
   }
 
   //need to sort out paths
+  let paths = buildpaths();
+  paths.forEach((p,j) => {
+    let x = j === 0 ? x1+5 : x2+5;
+    for (let i = 0; i < paths.length; i++) {
+      drawPath(rowArray[j], p[i], x, grid, yinc);
+    }
+  });
 
   let lines = svg.group(grid, {style: "stroke: #111; stroke-width:1;"});
   svg.line(lines, x1-2, yinc+30, x1-2+w1, yinc+30);
@@ -1291,11 +1330,11 @@ function findbypn(pn, pnstage) {
 //n will be 1 if description is being shown, otherwise 2
 //allows one working bell from each cycle if there is more than one working cycle
 //attempts to choose palindromic bell
-function chooseworking(n) {
+function chooseworking(n, method) {
   let used = [];
   method.hunts.forEach(b => used.push(b));
   let bell;
-  if (used.length < stage) {
+  if (used.length < method.stage) {
     let pal = testlastpn(method.plainPN[method.plainPN.length-1]);
     
     if (pal && !used.includes(pal) && (n === 1 || method.pbOrder.length === 1)) {
@@ -1304,6 +1343,7 @@ function chooseworking(n) {
       bell = n === 1 ? [method.pbOrder[0][0]] : method.pbOrder.map(a => a[0]) ;
     }
   }
+  //returning an array
   return bell;
 }
 
