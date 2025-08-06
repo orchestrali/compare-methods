@@ -1430,6 +1430,74 @@ function buildplaincourse(stage, pn) {
   return rowArray;
 }
 
+//take a method title and split it into name and classification
+function splittitle(title) {
+  let res = {};
+  let words = title.split(" ");
+  let last = words.pop();
+  let stagename;
+  let cname;
+  if (stages.find(o => o.name === last)) {
+    stagename = last;
+  } else {
+    //title isn't really a method title (or isn't a stage I recognize)
+    return null;
+  }
+  let penult = words.pop();
+  let check;
+  switch (penult) {
+    case "Bob": case "Place":
+      let treble = words[words.length-1] === "Treble";
+      if (treble) {
+        cname = words.pop() + " " + penult;
+      } else {
+        cname = penult;
+        res.plain = true;
+      }
+      res.class = cname;
+      //check little
+      check = true;
+      break;
+    case "Surprise": case "Delight": case "Alliance":
+      cname = penult;
+      res.class = cname;
+      //check little
+      check = true;
+      break;
+    case "Differential":
+      cname = penult;
+      res.class = cname;
+      res.name = words.join(" ");
+      res.rest = penult + " " + stagename;
+      //is a principle
+      return res;
+      break;
+    default:
+      words.push(penult);
+      res.name = words.join(" ");
+      res.rest = stagename;
+      return res;
+  }
+  if (check) {
+    //should be all still in the function???
+    let little = words[words.length-1] === "Little";
+    let i = little ? words.length-2 : words.length-1;
+    let diff = i > -1 && words[i] === "Differential";
+    let rest = [cname, stagename];
+    if (little) {
+      res.little = true;
+      rest.unshift(words.pop());
+    }
+    if (diff) {
+      res.differential = true;
+      rest.unshift(words.pop());
+    }
+    res.name = words.join(" ");
+    res.rest = rest.join(" ");
+  }
+  return res;
+}
+
 const placeNames = [{num: 1, name: "lead"}, {num: 2, name: "2nds"}, {num: 3, name: "3rds"}];
 
 function ordinal(p) {
