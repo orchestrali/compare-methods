@@ -987,8 +987,11 @@ function handletitles(titles) {
       let r = splittitle(t);
       if (r) {
         let diff = r.rest.length - r.name.length;
-        if (r.differential && r.little) //put diff back with name??
-        res.push([r.name, r.rest]);
+        if (r.differential && r.little) {
+          res.push([r.name + " Differential", r.rest.slice(13)]);
+        } else {
+          res.push([r.name, r.rest]);
+        }
       } else {
         res.push([t]);
       }
