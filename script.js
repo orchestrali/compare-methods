@@ -669,7 +669,7 @@ function submitform() {
     resultsrouter(query1, query2);
   }
   
-  //resultsrouter(queryobj);
+  
 }
 
 function resultsrouter(q1, q2) {
@@ -819,11 +819,11 @@ function drawNumbers(arr, x, parent) {
 }
 
 //input bell is object with keys bell, weight, color
-function drawPath(arr, bell, x, parent, yinc) {
+function drawPath(arr, bell, x, parent, yinc, top) {
   let g = drawElement("group", [parent, {style: "stroke:"+bell.color+"; stroke-width:"+bell.weight+"; fill:none;"}]);
   let num = bell.bell;
   let current = arr[0].bells.indexOf(num);
-  let path = "M "+(current*16+x)+" "+(yinc/2+30);
+  let path = "M "+(current*16+x)+" "+(yinc/2+top);
   for (let i = 1; i < arr.length; i++) {
     let index = arr[i].bells.indexOf(num);
     if (index === current) {
@@ -870,6 +870,7 @@ function gridcolorsets(n) {
   return colors;
 }
 
+//primary function for building set of paths to draw
 function buildpaths() {
   let paths = [];
 
@@ -979,6 +980,28 @@ function drawgrid(pbs) {
   }
 }
 
+function handletitles(titles) {
+  let res = [];
+  titles.forEach(t => {
+    if (t.includes(" ")) {
+      let r = splittitle(t);
+      if (r) {
+        res.push([r.name, r.rest]);
+      } else {
+        res.push([t]);
+      }
+    } else {
+      res.push([t]);
+    }
+  });
+  res.forEach(a => {
+    if (a[0].length > 30) {
+      //dunno actual threshhold or quite what to do about it
+    }
+  });
+  return res;
+}
+
 //THIS ONE
 function drawgrids(titles) {
   let w1 = queryobj.method1.stage*16;
@@ -988,15 +1011,25 @@ function drawgrids(titles) {
   let x2 = width + 2;
   width += w2 + 60;
   let yinc = queryobj.numbers ? 20 : 12;
-  let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc + 30;
+  let tarr = handletitles(titles);
+  let top = Math.max(...tarr.map(a => a.length))*16;
+  let height = Math.max(rowArray[0].length, rowArray[1].length) * yinc + top;
 
   $("#container").append('<div class="grid"></div>');
   //let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
   let grid = svg.svg($("div.grid:last-child"), null, null, width, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
 
   let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 14px; font-weight: bold"});
-  svg.text(text, 10, 25, titles[0]);
-  svg.text(text, x2-15, 25, titles[1]);
+  for (let i = top/16; i > 0; i--) {
+    tarr.forEach((t,j) => {
+      let x = j === 0 ? 10 : x2-15;
+      if (t.length) {
+        let current = t.pop();
+        svg.text(text, x, i*16-1, current);
+      }
+    });
+  }
+  
   
   if (queryobj.numbers) {
     drawNumbers(rowArray[0], x1, grid);
@@ -1008,20 +1041,20 @@ function drawgrids(titles) {
   paths.forEach((p,j) => {
     let x = j === 0 ? x1+5 : x2+5;
     for (let i = 0; i < p.length; i++) {
-      drawPath(rowArray[j], p[i], x, grid, yinc);
+      drawPath(rowArray[j], p[i], x, grid, yinc, top);
     }
   });
 
   let lines = svg.group(grid, {style: "stroke: #111; stroke-width:1;"});
-  svg.line(lines, x1-2, yinc+30, x1-2+w1, yinc+30);
-  svg.line(lines, x2-2, yinc+30, x2-2+w2, yinc+30);
+  svg.line(lines, x1-2, yinc+top, x1-2+w1, yinc+top);
+  svg.line(lines, x2-2, yinc+top, x2-2+w2, yinc+top);
 
   rowArray.forEach((arr,j) => {
     let x = j === 0 ? x1 : x2;
     let xend = x-2 + (j === 0 ? w1 : w2);
     let stedman = arr.find(r => r.name === "new six");
     for (let i = 1; i < arr.length; i++) {
-      let y = arr[i].rowNum * yinc + 30;
+      let y = arr[i].rowNum * yinc + top;
       if (arr[i].name === "new six") {
         svg.line(lines, x-2, y, xend, y);
       }
