@@ -1019,10 +1019,10 @@ function drawgrids(titles) {
   //let titlesvg = svg.svg($("div.grid:last-child"), null, null, width, 30, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
   let grid = svg.svg($("div.grid:last-child"), null, null, width, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
 
-  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 14px; font-weight: bold"});
+  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 12px; font-weight: bold; text-anchor: middle;"});
   for (let i = top/16; i > 0; i--) {
     tarr.forEach((t,j) => {
-      let x = j === 0 ? 10 : x2-15;
+      let x = j === 0 ? 38+w1/2 : 38+w1+64+w2/2;
       if (t.length) {
         let current = t.pop();
         svg.text(text, x, i*16-1, current);
