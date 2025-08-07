@@ -64,9 +64,9 @@ $(function(){
   $(".stage").change(stagechange);
 
   $(".lookupstrat").change(changestrategy);
-	
+  
   $(".placeNotation").on("keyup", pnkeyup);
-	
+  
   $('.methodClass').change(classchange);
   $(".methodName").click(methodnameclick);
   //when a method in the dropdown list is clicked on, make it the methodName value and hide the list
@@ -251,7 +251,7 @@ function pnkeyup() {
       $("#pnerrors"+num).append(`<p>${next[0]}</p>`);
     }
   }
-	
+  
 }
 
 function classchange() {
@@ -709,7 +709,7 @@ function routermethod(obj) {
 function routerpn(obj) {
   let res = parsePN(obj.placeNotation, obj.stage);
   let title;
-	//console.log(res);
+  //console.log(res);
   if (res[0]) {
     //error
   } else {
@@ -1107,7 +1107,7 @@ function pnlexer(pn, pnstage) {
       err = "invalid character";
     }
   }
-	
+  
   return [err, tokens];
 }
 
@@ -1165,10 +1165,10 @@ function pnNumAbbr(tokens, pnstage) {
           }
         }
       }
-			
+      
       //if the value ends with the opposite quality from the stage, add stage to end
       if (stage%2 != numArr[numArr.length-1] % 2) {
-      	numArr.push(pnstage);
+        numArr.push(pnstage);
       }
       t.value = numArr;
     }
