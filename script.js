@@ -155,26 +155,10 @@ function stagechange(e) {
 
   blueBellOpts(min);
   
-  // BLUE BELL STUFF - include later!
-  /*
   
-  
-  toggleHunts();
-  
-  //build options to draw every line
-  bluelines = '';
-  allLines(stage);
-  $('div#everyline > ul').children().remove();
-  $('div#everyline > ul').append(bluelines);
-
-  if (type !== "grid" || gridtype !== "everyline") {
-    $("div#everyline").find(":input").prop("disabled", true);
-  }
-  
-  */
 }
 
-//switch between method name, pn, or complib
+//switch between method name or pn
 function changestrategy() {
   let id = this.id;
   let num = id.slice(6);
@@ -707,26 +691,6 @@ function resultsrouter(q1, q2) {
 }
 
 
-function routergrid(obj, title) {
-  //different grid display options
-  $("#container").append("<h1>"+title+"</h1>");
-
-  switch (obj.gridtype) {
-    case "gridline":
-      if (obj.blueBell != "auto") {
-        blueBell = Number(obj.blueBell);
-      }
-      let pbs = !method.stedman && method.leadLength > 3;
-      drawgrid(pbs);
-      break;
-    case "gridgrid":
-      drawgridgrid();
-      break;
-  }
-  
-  
-}
-
 function routermethod(obj) {
   let m = findmethod(obj);
   let title;
@@ -759,9 +723,10 @@ function routerpn(obj) {
         stage: obj.stage,
         leadLength: pn.length,
         plainPN: pn,
-				hunts: findhunts(pn, obj.stage)
+        hunts: findhunts(pn, obj.stage),
+        pbOrder: buildpborder(pn, obj.stage)
       });
-      //need to get pbOrder too
+      
       title = obj.placeNotation;
     }
     let i = method.length-1;
@@ -932,54 +897,6 @@ function buildpaths2(bb, hunts) {
 }
 
 
-
-function drawgridgrid() {
-  let width = rowArray[0].bells.length*16 + 38;
-  let x = 40;
-  let paths = buildgridpaths(queryobj.stage, method.hunts, queryobj.gridcolors);
-  //console.log(paths);
-  drawgridsvg(rowArray, paths, width, x);
-}
-
-function drawgrid(pbs) {
-  
-  let width = rowArray[0].bells.length*16 + 38;
-  let x = 40;
-  
-  let blue;
-  if (queryobj.blueBell === "auto") {
-    let n = queryobj.describe ? 1 : 2;
-    blue = chooseworking(n);
-    blueBell = blue[0];
-  } else {
-    blue = [blueBell];
-  }
-  
-  let paths = buildpaths2(blue);
-  
-  if (queryobj.describe) {
-    let working = !method.hunts.includes(blueBell);
-    describenew(rowArray, blueBell, stage, method.hunts, pbs && working);
-  }
-  
-  if (queryobj.pagination) {
-    let numleads = 1;
-    let chunk = method.leadLength ? Math.min(40, method.leadLength) : stage*2;
-    while ((chunk+1)*numleads < 40) {
-      numleads++;
-    }
-    let numrows = numleads*chunk;
-    let numsvgs = Math.ceil((rowArray.length-1)/(numrows));
-    for (let i = 0; i < numsvgs; i++) {
-      let arr = rowArray.slice(i*numrows, (i+1)*numrows+1);
-      drawgridsvg(arr, paths, width, x);
-    }
-  } else {
-    //svg.circle($("#containersvg"), 50, 50, 10, {fill: "blue"});
-    drawgridsvg(rowArray, paths, width, x);
-  }
-}
-
 function handletitles(titles) {
   let res = [];
   titles.forEach(t => {
@@ -1090,73 +1007,7 @@ function drawgrids(titles) {
   });
 }
 
-function drawgridsvg(arr, paths, width, x) {
-  let xinc = 16;
-  let yinc = 20;
-  if (!queryobj.numbers && !arr[0].description) {
-    yinc = 12;
-  }
-  let height = arr.length * yinc;
-  let gridwidth = (arr.some(r => r.method) || arr[0].description) ? width+500 : width;
-  $("#container").append('<div class="grid"></div>');
-  let grid = svg.svg($("div.grid:last-child"), null, null, gridwidth, height, {class: "grid", xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
-  
-  //draw numbers
-  if (queryobj.numbers) {
-    drawNumbers(arr, x, grid);
-  }
-  //draw lines
-  for (let i = 0; i < paths.length; i++) {
-    drawPath(arr, paths[i], x+5, grid, yinc);
-  }
-  
-  //draw LH lines
-  //indicate calls
-  let text = svg.group(grid, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 14px;"});
-  let lines = svg.group(grid, {style: "stroke: #111; stroke-width:1;"});
-  svg.line(lines, x-2, yinc, width, yinc);
-  let stedman = arr.find(r => r.name === "new six");
-  for (let i = 1; i < arr.length; i++) {
-    let y = arr[i].rowNum * yinc;
-    if (arr[i].name === "new six") {
-      svg.line(lines, x-2, y, width, y);
-    }
-    if (arr[i].name === "leadhead" && !stedman) {
-      svg.line(lines, x-2, y, width, y);
-    }
-    if (["b", "s"].includes(arr[i].type)) {
-      let t = arr[i].type === "b" ? "-" : "s";
-      svg.text(text, 24, y+yinc, t);
-    }
-    if (arr[i].method) {
-      let textx = x+(stage+1)*16;
-      svg.text(text, textx, y+yinc, arr[i].method);
-    }
-  }
-  
-  //add description
-  if (arr[0].description) {
-    drawdescript(text, x);
-  }
-  
-}
 
-function drawdescript(group, x) {
-  rowArray.forEach(r => {
-    if (r.instruction) {
-      let text = r.instruction;
-      if (r.with) {
-        text += " with "+r.with;
-      }
-      if (r.instruction2) {
-        text += " "+r.instruction2;
-      }
-      let tx = x+(r.bells.length+1)*16;
-      let y = 16+r.rowNum*20;
-      drawElement("text", [group, tx, y, text]);
-    }
-  });
-}
 
 
 // BELLRINGING FUNCTIONS
@@ -1184,11 +1035,40 @@ function rowStr(row) {
   return str;
 }
 
-//given pn find hunt bells
-function findhunts(pn, pnstage) {
+function getLH(pn, pnstage) {
   let start = rounds(pnstage);
   let lead = buildRows(start, pn, 1);
   let last = lead[lead.length-1].bells;
+  return last;
+}
+
+function buildpborder(pn, pnstage) {
+  let pborder = [];
+  let lh = getLH(pn, pnstage);
+  let working = lh.filter((n,i) => n != i+1);
+  let pbs = [];
+  let working2 = working;
+  while (working2.length > 0) {
+    pbs.push(working2.shift());
+    let last = pbs[pbs.length-1];
+    let next = lh.indexOf(last)+1;
+    do {
+      pbs.push(next);
+      let i = working2.indexOf(next);
+      working2.splice(i, 1);
+      last = next;
+      next = lh.indexOf(last)+1;
+    } while (!pbs.includes(next));
+
+    pborder.push(pbs);
+    pbs = [];
+  }
+  return pborder;
+}
+
+//given pn find hunt bells
+function findhunts(pn, pnstage) {
+  let last = getLH(pn, pnstage);
   let hunts = [];
   for (let i = 0; i < pnstage; i++) {
     if (last[i] === i+1) {
@@ -1958,369 +1838,6 @@ function describenew(rowArr, bell, stage, hunts, pbs, early) {
   function checkbtwn(lhi,i,j) {
     return lhi >= i && lhi <= j;
   }
-}
-
-function describe(rowArray, bell, stage, hunts, early) {
-  rowArray[0].description = true;
-  let i = 0;
-  
-  let work = [];
-  let placearr = rowArray.map(r => r.bells.indexOf(bell)+1);
-  //console.log(placearr);
-  let wtreble = false;
-  
-  //place bells
-  if (hunts && hunts.length && !hunts.includes(bell)) {
-    rowArray.forEach((r, i) => {
-      if (r.name === "leadhead" && r.rowNum > 0) {
-        let p = getPlace(r.rowNum);
-        let text = "Become "+placeName(p)+" place bell";
-        if (early) {
-          rowArray[i-1].instruction = text;
-        } else {
-          r.instruction = text;
-        }
-      }
-    });
-  }
-  
-  while (i < rowArray.length-2) {
-    let s = getPlace(i);
-    let t = getPlace(i+1);
-    let u = getPlace(i+2);
-    
-    if (t == s && u == s) {
-      //console.log("3+ blows");
-      if (i > 0 && hunts.length && hunts[0] === 1) {
-        let dir = s-placearr[i-1];
-        let treble = rowArray[i-1].bells[s-1] === 1;
-        if (treble) {
-          if (rowArray[i-1].instruction) {
-            rowArray[i-1].instruction += ",";
-            rowArray[i-1].instruction2 = "pass treble in "+(s-dir)+"-"+s;
-          } else {
-            rowArray[i-1].instruction = "Pass treble in "+(s-dir)+"-"+s;
-          }
-        }
-      }
-      let count = 3;
-      while (checkPlace(i+count, s)) {
-        count++;
-      }
-      work.push(count + " blows in " + placeName(s));
-      let text = count + " blows in " + placeName(s);
-      if (rowArray[i].instruction) {
-        rowArray[i].instruction += ", ";
-        rowArray[i].instruction2 = text;
-      } else {
-        rowArray[i].instruction = text;
-      }
-      
-      i += count-1;
-    } else if (t == s) {
-      //console.log("Make place");
-      if (i > 0 && hunts.length && hunts[0] === 1) {
-        let dir = s-placearr[i-1];
-        let treble = rowArray[i-1].bells[s-1] === 1;
-        if (wtreble) {
-          wtreble = false;
-        } else if (treble) {
-          console.log("make place");
-          if (rowArray[i-1].instruction) {
-            rowArray[i-1].instruction += ",";
-            rowArray[i-1].instruction2 = "pass treble in "+(s-dir)+"-"+s;
-          } else {
-            rowArray[i-1].instruction = "Pass treble in "+(s-dir)+"-"+s;
-          }
-        }
-      }
-      let text = makePlace(s, rowArray[i].rowNum);
-      work.push(text);
-      if (rowArray[i].instruction) {
-        rowArray[i].instruction += ", ";
-        rowArray[i].instruction2 = text;
-      } else {
-        rowArray[i].instruction = text;
-      }
-      i++;
-    } else if (t-s == u-t) {
-      //console.log("Hunt");
-      let dir = t-s;
-      let dirName = dirname(dir);
-      let text = "Hunt " + dirName;
-      if (rowArray[i].instruction) {
-        rowArray[i].instruction += ", "+text;
-      } else {
-        rowArray[i].instruction = text;
-      }
-      let treble, place;
-      if (hunts.length && hunts[0] === 1) {
-        place = s;
-        let j = 0;
-        while (j < 2) {
-          treble = rowArray[i+j].bells[place-1+dir] === 1;
-          if (treble) {
-            if (j === 0) {
-              rowArray[i].instruction += ",";
-              rowArray[i].instruction2 = "pass treble in "+s+"-"+t;
-              if (s === 1 && t === 2) {
-                rowArray[i].instruction2 += " (treble takes you off lead)";
-              } else if (s === stage && t === stage-1) {
-                rowArray[i].instruction2 += " (treble takes you off the back)";
-              }
-            } else {
-              rowArray[i+j].instruction = "Pass treble in "+place+"-"+(place+dir);
-            }
-          }
-          place += dir;
-          j++;
-        }
-      }
-      place = u;
-      while (getPlace(i+3)-place == dir) {
-        i++;
-        place+=dir;
-        if (hunts.length && hunts[0] === 1) {
-          treble = getBell(i+1, place) === 1;
-          if (treble) {
-            rowArray[i+2].instruction = "Pass treble in "+placearr[i+1]+"-"+placearr[i+2];
-          }
-        }
-      }
-      
-      
-      work.push("Hunt " + dirName);
-      i++;
-      //console.log("i is now "+i);
-    } else if (t == u) {
-      //console.log("also make place");
-      if (hunts.length && hunts[0] === 1) {
-         
-        
-        let treble = rowArray[i].bells[t-1] === 1;
-        if (wtreble) {
-          wtreble = false;
-        } else if (treble) {
-          let j = early ? i : i+1;
-          let key = rowArray[j].instruction ? "instruction2" : "instruction";
-          //console.log("also make place");
-          rowArray[j][key] = "Pass treble in "+s+"-"+t;
-          if (s === 2 && t === 1) {
-            rowArray[j][key] += " (take treble off lead)";
-          } else if (s === 1 && t === 2) {
-            rowArray[j][key] += " (treble takes you off lead)";
-          } else if (s === stage-1 && t === stage) {
-            rowArray[j][key] += " (take treble off the back)";
-          } else if (s === stage && t === stage-1) {
-            rowArray[j][key] += " (treble takes you off the back)";
-          }
-        }
-        
-        
-      }
-      
-      let last = i > 0 ? work[work.length-1] : "";
-      let x = (last.indexOf("Point") == -1 && last.indexOf("Fish") == -1 && early) ? i : i+1;
-      let v = rowArray[i+3] ? getPlace(i+3) : null;
-      if (v != u) {
-        let text = makePlace(t, rowArray[x].rowNum);
-        work.push(text);
-        if (rowArray[x].instruction) {
-          rowArray[x].instruction2 = text;
-        } else {
-          rowArray[x].instruction = text;
-        }
-        i+=2;
-      } else {
-        let count = 3;
-        while (checkPlace(i+count+1, t)) {
-          count++;
-        }
-        let text = count + " blows in " + placeName(t);
-        work.push(text);
-        if (rowArray[x].instruction) {
-          rowArray[x].instruction2 = text;
-        } else {
-          rowArray[x].instruction = text;
-        }
-        i += count;
-      }
-    } else {
-      //point, fishtail, or dodge
-      let dir1 = t-s;
-      let v = rowArray[i+3] ? getPlace(i+3) : null;
-      
-      if (v == u || v-u != dir1) {
-        let stroke = rowArray[i+1].rowNum % 2 == 1 ? " at hand" : " at back";
-        let text = "Point " + placeName(t) + stroke;
-        work.push(text);
-        let j = early ? i : i+1;
-        if (rowArray[j].instruction) {
-          //if the point happens in the leadhead row, it needs to come before the new place bell
-          rowArray[j].instruction2 = rowArray[j].instruction;
-          rowArray[j].instruction = text;
-        } else {
-          rowArray[j].instruction = text;
-        }
-        rowArray[j].with = getBell(i+1,s);
-        i+=2;
-      } else {
-        let count = 1;
-        let starti = i;
-        let j = early ? i : i+1;
-        i+=3;
-        while (getPlace(i) == t && getPlace(i+1) == s) {
-          count++;
-          i+=2;
-        }
-        if (getPlace(i) == s || getPlace(i) == s+dir1*-1) {
-          let points = count > 2 ? ", " + count + " points " + placeName(t) : "";
-          let places = s > t ? t + "-" + s : s + "-" + t;
-          let text = "Fishtail " + places + points;
-          work.push(text);
-          if (rowArray[j].instruction) {
-            rowArray[j].instruction2 = text;
-          } else {
-            rowArray[j].instruction = text;
-          }
-          rowArray[j].with = getBell(starti+1,s);
-          i--;
-        } else if (getPlace(i+1) == t || getPlace(i+1) == t+dir1 || getPlace(i+1) == null) {
-          let places = s > t ? t + "-" + s : s + "-" + t;
-          let text = dodgeNum(count) + places + " " + dirname(dir1);
-          work.push(text);
-          if (!early) j += 1;
-          if (rowArray[j].instruction) {
-            if (rowArray[starti+2].name === "leadhead") {
-              rowArray[j].instruction2 = rowArray[j].instruction;
-              rowArray[j].instruction = text;
-            } else {
-              rowArray[j].instruction2 = text;
-            }
-          } else {
-            rowArray[j].instruction = text;
-          }
-          rowArray[j].with = getBell(starti+1,s);
-          if (rowArray[j].with === 1) {
-            wtreble = true;
-          }
-        }
-        
-      }
-      
-    }
-  }
-  
-  let penult = getPlace(rowArray.length-2);
-  let ult = getPlace(rowArray.length-1);
-  
-  if (i == rowArray.length-2) {
-    let dir = ult-penult;
-    if (dir != 0 && !work[work.length-1].startsWith("Hunt")) {
-      work.push("Hunt " + dirname(dir));
-      rowArray[rowArray.length-2].instruction = "Hunt " + dirname(dir);
-    } else if (ult == penult) {
-      work.push(makePlace(ult));
-      rowArray[rowArray.length-2].instruction = makePlace(ult);
-    }
-  }
-  
-  //Stedman whole turns
-  i = 0;
-  while (i < rowArray.length-6) {
-    let set = placearr.slice(i, i+7);
-    let opt0 = [set[0],set[1],set[3],set[4]];
-    let opt1 = [set[1],set[2],set[4],set[5]];
-    if (opt0.every(n => n === set[0])) {
-      let p = set[0];
-      let j = i+3;
-      let c = 0;
-      let three = set[2];
-      while (three != p) {
-        c++;
-        if (placearr[j] === p && placearr[j+1] === p) {
-          three = placearr[j+2];
-        } else {
-          three = p;
-        }
-        j += 3;
-      }
-      
-      if (c === 2) {
-        let instruct = " (Stedman whole turn";
-        if (![1,stage].includes(set[0])) {
-          instruct += " " + set[0] + "-" + set[2];
-        }
-        instruct += ")";
-        let j = i;
-        let n = 0;
-        do {
-          if (rowArray[j].instruction) {
-            rowArray[j].instruction2 = instruct;
-            n++;
-          }
-          j++;
-        } while (n < 3 && j < i+6);
-        i += 6;
-      } else {
-        i = j;
-      }
-    } else if (opt1.every(n => n === set[1]) && set[0] != set[1]) {
-      let p = set[1];
-      let j = i+4;
-      let c = 0;
-      let three = set[3];
-      while (three != p) {
-        c++;
-        if (placearr[j] === p && placearr[j+1] === p) {
-          three = placearr[j+2];
-        } else {
-          three = p;
-        }
-        j += 3;
-      }
-      if (c === 2) {
-        let instruct = " (Stedman whole turn";
-        if (![1,stage].includes(set[1])) {
-          instruct += " " + set[1] + "-" + set[3];
-        }
-        instruct += ")";
-        let j = i+1;
-        let n = 0;
-        do {
-          if (rowArray[j].instruction) {
-            rowArray[j].instruction2 = instruct;
-            n++;
-          }
-          j++;
-        } while (n < 3 && j < i+6);
-        i += 6;
-      } else {
-        i = j;
-      }
-    } else {
-      i++;
-    }
-    
-    
-  }
-  //console.log(work);
-  
-  function getPlace(j) {
-    return rowArray[j] ? rowArray[j].bells.indexOf(bell)+1 : null;
-  }
-  
-  function getBell(row, place) {
-    return rowArray[row].bells[place-1];
-  }
-  
-  function checkPlace(row, value) {
-    return getPlace(row) === value;
-  }
-  
-  
-  
-  
 }
 
 function makePlace(num, rownum) {
