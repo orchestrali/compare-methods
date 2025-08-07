@@ -1002,6 +1002,20 @@ function handletitles(titles) {
   res.forEach(a => {
     if (a[0].length > 30) {
       //dunno actual threshhold or quite what to do about it
+      let words = a[0].split(" ");
+      let str = words.pop();
+      let l = words.length;
+      while (l > 0) {
+        let last = words.pop();
+        if (last.length + str.length < 25) {
+          str = last + " " + str;
+        } else {
+          a.unshift(str);
+          str = last;
+        }
+        l = words.length;
+      }
+      a.unshift(str);
     }
   });
   return res;
@@ -1030,7 +1044,13 @@ function drawgrids(titles) {
       let x = j === 0 ? 38+w1/2 : 38+w1+64+w2/2;
       if (t.length) {
         let current = t.pop();
-        svg.text(text, x, i*16-1, current);
+        let style = {};
+        let st = method[j].stage;
+        if ((st < 7 && current.length > 22) || current.length > 29) {
+          let w = j === 0 ? w1 : w2;
+          style.style = "lengthAdjust: spacingAndGlyphs; textLength: "+(w+40);
+        }
+        svg.text(text, x, i*16-1, current, style);
       }
     });
   }
