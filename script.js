@@ -48,7 +48,7 @@ var blueBell;
 
 
 $(function(){
-  
+  console.log("hello");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -712,6 +712,7 @@ function routerpn(obj) {
   //console.log(res);
   if (res[0]) {
     //error
+    console.log("error with pn");
   } else {
     let pn = res[1];
     let m = findbypn(pn, obj.stage);
