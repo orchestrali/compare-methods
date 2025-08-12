@@ -48,7 +48,7 @@ var blueBell;
 
 
 $(function(){
-  console.log("hello");
+  console.log("why??");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -675,7 +675,7 @@ function resultsrouter(q1, q2) {
   
   
   //do stuff with it
-  
+  console.log(titles);
   
   if (titles[0] && titles[1]) {
     //console.log(method.hunts);
