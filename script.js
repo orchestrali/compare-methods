@@ -161,7 +161,7 @@ function stagechange(e) {
 //switch between method name or pn
 function changestrategy() {
   let id = this.id;
-  let num = id.slice(6);
+  let num = id.slice(-1);
   let prev = searches[id]+num;
   searches[id] = $("#"+id+" input:checked").val();
   let current = searches[id]+num;
