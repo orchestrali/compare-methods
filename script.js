@@ -919,7 +919,7 @@ function handletitles(titles) {
   res.forEach(a => {
     if (a[0].length > 30) {
       //dunno actual threshhold or quite what to do about it
-      let words = a[0].split(" ");
+      let words = a.shift().split(" ");
       let str = words.pop();
       let l = words.length;
       while (l > 0) {
