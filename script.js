@@ -631,7 +631,7 @@ function submitform() {
     if (i1 > -1) {
       query1[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
     } else if (i2 > -1) {
-      query2[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
+      query2[key[0].slice(0,-1)] = i2 === 0 ? Number(key[1]) : key[1];
     } else {
       if (key[1] === "colors") {
         queryobj.gridcolors = true;
