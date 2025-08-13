@@ -969,7 +969,8 @@ function drawgrids(titles) {
         let st = method[j].stage;
         if ((st < 7 && current.length > 22) || current.length > 29) {
           let w = j === 0 ? w1 : w2;
-          style.style = "lengthAdjust: spacingAndGlyphs; textLength: "+(w+40);
+          style.lengthAdjust = "spacingAndGlyphs";
+          style.textLength = w+40;
         }
         svg.text(text, x, i*16-1, current, style);
       }
