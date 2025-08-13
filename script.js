@@ -48,7 +48,7 @@ var blueBell;
 
 
 $(function(){
-  console.log("I don't understand");
+  console.log("there isn't a problem???");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -718,9 +718,11 @@ function routerpn(obj) {
     let pn = res[1];
     let m = findbypn(pn, obj.stage);
     if (m) {
+      console.log("pn is known method");
       method.push(m);
-      title = method.name;
+      title = m.name;
     } else {
+      console.log("pn is not known");
       method.push({
         stage: obj.stage,
         leadLength: pn.length,
