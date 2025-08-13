@@ -48,7 +48,7 @@ var blueBell;
 
 
 $(function(){
-  console.log("why??");
+  console.log("I don't understand");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -707,9 +707,10 @@ function routermethod(obj) {
 }
 
 function routerpn(obj) {
+  console.log("dealing with pn");
   let res = parsePN(obj.placeNotation, obj.stage);
   let title;
-  //console.log(res);
+  console.log(res);
   if (res[0]) {
     //error
     console.log("error with pn");
