@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("testing");
+  console.log("tricky!");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -629,7 +629,7 @@ function resultsrouter(q1, q2) {
       }
       if (huntpp[0] === huntpp[1]) {
         //continue doing stuff
-        console.log(pp);
+        //console.log(pp);
         if ($('input[name="methodabove"]').val() === "two") pns.reverse();
         let combined = combinepn(pns[0], pns[1], pp);
         $("#container").append(`<h4>Success?</h4>`);
@@ -991,8 +991,10 @@ function bellplaces(rowarr, b) {
 
 function combinepn(above, below, huntpp) {
   let res = [];
-  for (let i = 0; i < huntpp.length; i++) {
-    let p = huntpp[i];
+  for (let i = 0; i < above.length; i++) {
+    let pp = [huntpp[i], huntpp[i+1]];
+    let min = Math.min(...pp);
+    let max = Math.max(...pp);
     let a = above[i];
     let b = below[i];
     if (a === "x" && b === "x") {
@@ -1001,12 +1003,12 @@ function combinepn(above, below, huntpp) {
       let change = [];
       if (b != "x") {
         b.forEach(n => {
-          if (n < p) change.push(n);
+          if (n < min) change.push(n);
         });
       }
       if (a != "x") {
         a.forEach(n => {
-          if (n > p) change.push(n);
+          if (n > max) change.push(n);
         });
       }
       change.length ? res.push(change) : res.push("x");
