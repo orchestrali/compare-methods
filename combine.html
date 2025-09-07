@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Change Ringing Tools</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" 
+      type="image/png" 
+      href="https://sallyandbobminor.wordpress.com/wp-content/uploads/2025/07/bristol-major-short.png">
+    
+    
+    
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>
+          Change Ringing Tools
+        </h1>
+        
+        <h4>
+          Built by <a href="https://www.alisonnicole.com" target="blank">Alison Stevens</a> • Support this project on <a href="https://www.patreon.com/alisons" target="blank">Patreon</a> or <a href="https://ko-fi.com/alisonstevens" target="blank">Ko-fi</a> • Check out my embroidered method bookmarks on <a href="https://www.etsy.com/shop/RingingEmbroidery" target="blank">Etsy</a>
+        </h4>
+      </div>
+    </header>
+    
+    <main>
+      <div id="nav-options" class="header">
+          <div>
+            <p>
+              Other ringing tools
+            </p>
+            <div class="arrow"></div>
+          </div>
+          <ul class="dropdown">
+            <li><a href="/callchange">Call change game</a></li>
+            <li><a href="/ringle">Ringle: a Wordle-inspired change ringing game</a></li>
+            <li><a href="/stedman">Stedman tips and tricks</a></li>
+            <li><a href="/court">Court places and Cambridge places</a></li>
+            <li><a href="https://towers.changeringing.net">Tower guide</a></li>
+            <li><a href="https://www.sallyandbobminor.com" target="blank">Alison's ringing blog</a></li>
+          </ul>
+
+      </div>
+      
+      <h3 class="header">
+        Compare two methods
+      </h3>
+      
+     
+      
+      <form action="/" method="get" autocomplete="off" id="formform">
+        <h3>
+          Method 1
+        </h3>
+        <div id="method-info1" class="category method-info">
+          
+          <div>
+            <label for="stage1">
+              Stage:
+            </label>
+            <select id="stage1" name="stage1" required class="stage">
+              <option value disabled selected>required</option>
+              <option value="4">4 - Minimus</option>
+              <option value="5">5 - Doubles</option>
+              <option value="6">6 - Minor</option>
+              <option value="7">7 - Triples</option>
+              <option value="8">8 - Major</option>
+              <option value="9">9 - Caters</option>
+              <option value="10">10 - Royal</option>
+              <option value="11">11 - Cinques</option>
+              <option value="12">12 - Maximus</option>
+              <option value="13">13 - Sextuples</option>
+              <option value="14">14 - Fourteen</option>
+              <option value="15">15 - Septuples</option>
+              <option value="16">16 - Sixteen</option>
+            </select>
+          </div>
+          <div>
+            <fieldset class="borderless" id="lookupstrat1" class="lookupstrat">
+              <p class="bold">
+                Lookup strategy:
+              </p>
+              <ul>
+                <li><label><input type="radio" name="lookup1" value="name" checked />search by method name</label></li>
+                <li><label><input type="radio" name="lookup1" value="pn" />enter place notation</label></li>
+                <!--<li><label><input type="radio" name="lookup" value="complib" />enter complib id</label></li>-->
+              </ul>
+            </fieldset>
+          </div>
+          
+          
+          <div class="searchstrategy searchstrategy1" id="searchbyname1">
+            <div>
+              <label for="methodClass1">
+                Method class:
+              </label>
+              <select id="methodClass1" name="methodClass1" class="methodClass" disabled >
+              </select>
+            </div>
+            <div class="flex methodSearch" id="methodSearch1">
+              <label for="methodName1">
+                Search for a method:
+              </label>
+              <div>
+                <input type="text" id="methodName1" name="methodName1" class="methodName" autocomplete="off" disabled />
+                <ul id="methodList1" class="methodList">
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="searchstrategy searchstrategy1 hidden" id="searchbypn1">
+            <div class="flex">
+              <label for="placeNotation1">
+                Place notation:
+              </label>
+              <input type="text" id="placeNotation1" name="placeNotation1" class="placeNotation" minlength="1" autocomplete="off" disabled />
+            </div>
+            <div class="errors" id="pnerrors1">
+              
+            </div>
+          </div>
+          
+        </div>
+        <div class="line"></div>
+        <h3>
+          Method 2
+        </h3>
+        <div id="method-info2" class="category method-info">
+          
+          <div>
+            <label for="stage2">
+              Stage:
+            </label>
+            <select id="stage2" name="stage2" required class="stage">
+              <option value disabled selected>required</option>
+              <option value="4">4 - Minimus</option>
+              <option value="5">5 - Doubles</option>
+              <option value="6">6 - Minor</option>
+              <option value="7">7 - Triples</option>
+              <option value="8">8 - Major</option>
+              <option value="9">9 - Caters</option>
+              <option value="10">10 - Royal</option>
+              <option value="11">11 - Cinques</option>
+              <option value="12">12 - Maximus</option>
+              <option value="13">13 - Sextuples</option>
+              <option value="14">14 - Fourteen</option>
+              <option value="15">15 - Septuples</option>
+              <option value="16">16 - Sixteen</option>
+            </select>
+          </div>
+          <div>
+            <fieldset class="borderless" id="lookupstrat2" class="lookupstrat">
+              <p class="bold">
+                Lookup strategy:
+              </p>
+              <ul>
+                <li><label><input type="radio" name="lookup2" value="name" checked />search by method name</label></li>
+                <li><label><input type="radio" name="lookup2" value="pn" />enter place notation</label></li>
+                <!--<li><label><input type="radio" name="lookup" value="complib" />enter complib id</label></li>-->
+              </ul>
+            </fieldset>
+          </div>
+          
+          
+          <div class="searchstrategy searchstrategy2" id="searchbyname2">
+            <div>
+              <label for="methodClass2">
+                Method class:
+              </label>
+              <select id="methodClass2" name="methodClass2" class="methodClass" disabled >
+              </select>
+            </div>
+            <div class="flex methodSearch" id="methodSearch2">
+              <label for="methodName2">
+                Search for a method:
+              </label>
+              <div>
+                <input type="text" id="methodName2" name="methodName2" class="methodName" autocomplete="off" disabled />
+                <ul id="methodList2" class="methodList">
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="searchstrategy searchstrategy2 hidden" id="searchbypn2">
+            <div class="flex">
+              <label for="placeNotation2">
+                Place notation:
+              </label>
+              <input type="text" id="placeNotation2" name="placeNotation2" class="placeNotation" minlength="1" autocomplete="off" disabled />
+            </div>
+            <div class="errors" id="pnerrors2">
+              
+            </div>
+          </div>
+          
+        </div>
+        <div class="line"></div>
+        <div id="gridopts" class="type">
+          <h3>
+            Display options
+          </h3>
+          <fieldset class="borderless" id="gridtype">
+            <legend class="bold">
+              Display as:
+            </legend>
+            <ul>
+              <li><label><input type="radio" name="gridtype" value="gridline" checked />line(s)</label></li>
+              <li><label><input type="radio" name="gridtype" value="gridgrid" />grid</label></li>
+            </ul>
+          </fieldset>
+          
+          <div class="gridtype" id="gridline">
+            <div>
+              <label><input type="checkbox" checked id="show-nums" name="numbers" value="show" />Show numbers</label>
+            </div>
+            <div>
+              <label for="blueBell">
+                Draw path for bell:
+              </label>
+              <select id="blueBell" name="blueBell" class="blueBell">
+      
+              </select>
+            </div>
+            <!--<div>
+              <label>
+                <input type="checkbox" id="describe" name="describe" value="show" />Show description of the blue line
+              </label>
+            </div>-->
+          </div>
+          <div class="gridtype hidden" id="gridgrid">
+            <fieldset class="borderless">
+              <legend>Draw working bells:</legend>
+              <ul>
+                <li>
+                  <label><input type="radio" name="gridcolors" value="0" />same color</label>
+                </li>
+                <li>
+                  <label><input type="radio" name="gridcolors" value="colors" checked />different colors</label>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
+                
+        </div>
+        <button type="button" id="submit">Submit</button>
+      </form>
+      <div id="container">
+        
+      </div>
+    </main>
+    
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+    <script src="jquery.svg.js"></script>
+    <script src="jquery.svgdom.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
