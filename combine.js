@@ -623,7 +623,7 @@ function resultsrouter(q1, q2) {
       let pp;
       let pns = [];
       for (let i = 0; i < 2; i++) {
-        pp = bellplaces(rowarr[i].map(o => o.bells), huntb);
+        pp = bellplaces(rowArray[i].map(o => o.bells), huntb);
         huntpp.push(rowstring(pp));
         pns.push(method[i].plainPN);
       }
