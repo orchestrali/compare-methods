@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("reverse");
+  console.log("show method");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -632,10 +632,9 @@ function resultsrouter(q1, q2) {
         //console.log(pp);
         if ($("#method2above").is(":checked")) pns.reverse();
         let combined = combinepn(pns[0], pns[1], pp);
-        $("#container").append(`<h4>Success?</h4>`);
-        console.log(combined);
-        let m = findbypn(combined, Math.max(method[0].stage, method[1].stage));
-        if (m) console.log(m.name);
+        //$("#container").append(`<h4>Success?</h4>`);
+        combinationrouter(combined);
+        
       } else {
         let text = "hunt paths don't match";
         $("#container").append(`<h4>${text}</h4>`);
@@ -654,6 +653,34 @@ function resultsrouter(q1, q2) {
       //obj.lookup === "name" ? "Method not found" : "Problem with place notation";
     $("#container").append(`<h4>${text}</h4>`);
   }
+}
+
+
+function combinationrouter(pn) {
+  let n = Math.max(method[0].stage, method[1].stage);
+  let title;
+  let combo = findbypn(pn, n);
+  if (combo) {
+    title = combo.name;
+  } else {
+    combo = {
+      stage: n,
+      leadLength: pn.length,
+      plainPN: pn,
+      hunts: findhunts(pn, n)
+    };
+    title = pnstring(pn);
+  }
+  $("#container").append(`<h4>${title}</h4>`);
+  let rowarr = buildRows(rounds(n), pn, 1);
+  rowarr.unshift({rowNum: 0, bells: rounds(m.stage)});
+  $("#container").append(`<p>Leadhead: ${rowstring(rowarr[rowarr.length-1].bells)}</p>`);
+
+  let width = n*16+38;
+  let x = 40;
+  let paths = buildgridpaths(n, combo.hunts, true);
+
+  drawgridsvg(rowarr, paths, width, x);
 }
 
 function routermethod(obj) {
@@ -1023,5 +1050,92 @@ function combinepn(above, below, huntpp) {
 
 
 
+// **** DRAW STUFF ****
+
+function drawgridsvg(arr, paths, width, x) {
+  let yinc = 12;
+  let height = arr.length * yinc;
+
+  $("#container").append('<div class="grid"></div>');
+  let parent = svg.svg($("div.grid:last-child"), null, null, width, height, {xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"});
+
+  //draw bell paths
+  for (let i = 0; i < paths.length; i++) {
+    drawPath(arr, paths[i], x+5, parent, yinc);
+  }
+
+  //leadhead line
+  let lines = svg.group(parent, {style: "stroke: #111; stroke-width:1;"});
+  let y = (arr.length-1)*yinc;
+  svg.line(lines, x-2, y, width, y);
+}
 
 
+
+
+function drawElement(label, args) {
+  return svg[label](...args);
+}
+
+function drawNumbers(arr, x, parent) {
+  let g = drawElement("group", [parent, {style: "font-family: Verdana, sans-serif; fill: #000; font-size: 16px;"}]);
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr[i].bells.length; j++) {
+      let number = arr[i].bells[j];
+      let fill = i === 0 && arr[i].rowNum > 0 ? "#888" : null;
+      let text = drawElement("text", [g, x+j*16, 16+i*20, places[number-1]]);
+      if (fill) $(text).css("fill", fill);
+    }
+  }
+}
+
+//input "bell" is object with color, weight, bell (number)
+function drawPath(arr, bell, x, parent, yinc) {
+  let g = drawElement("group", [parent, {style: "stroke:"+bell.color+"; stroke-width:"+bell.weight+"; fill:none;"}]);
+  let num = bell.bell;
+  let current = arr[0].bells.indexOf(num);
+  let path = "M "+(current*16+x)+" "+(yinc/2);
+  for (let i = 1; i < arr.length; i++) {
+    let index = arr[i].bells.indexOf(num);
+    if (index === current) {
+      path += " v ";
+    } else if (index > current) {
+      path += " l16 ";
+    } else if (index < current) {
+      path += " l -16 ";
+    }
+    path += yinc;
+    current = index;
+  }
+  drawElement("path", [g, path]);
+}
+
+function gridcolorsets(n) {
+  let colors = ["a4e0b0", "#71d184", "#3fa654", "#007317", "teal", "lightseagreen", "#8adfef", "#6ab9ef", "#658de6", "#4c5ced", "#1a1ad6", "#000080", "indigo", "#8a2be2", "#9f7be2"];
+  let order = [6,0,8,1,13,4,11,7,2,5,14,12];
+  let remove = order.slice(0,15-n).sort((a,b) => b-a);
+  remove.forEach(e => {
+    colors.splice(e, 1);
+  });
+  return colors;
+}
+
+//stage, huntbells, whether working bells should be different colors
+function buildgridpaths(n,hunts,color) {
+  let colors = gridcolorsets(n-hunts.length);
+  let r = rounds(n);
+  let i = 0;
+  let arr = r.map(b => {
+    let p = {
+      bell: b,
+      weight: hunts.includes(b) ? 1 : 2,
+      color: hunts.includes(b) ? "red" : "blue"
+    };
+    if (color && !hunts.includes(b)) {
+      p.color = colors[i];
+      i++;
+    }
+    return p;
+  });
+  return arr;
+}
