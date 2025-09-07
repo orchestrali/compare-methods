@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("also tricky!");
+  console.log("reverse");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -630,7 +630,7 @@ function resultsrouter(q1, q2) {
       if (huntpp[0] === huntpp[1]) {
         //continue doing stuff
         //console.log(pp);
-        if ($('input[name="methodabove"]').val() === "two") pns.reverse();
+        if ($("#method2above").is(":checked")) pns.reverse();
         let combined = combinepn(pns[0], pns[1], pp);
         $("#container").append(`<h4>Success?</h4>`);
         console.log(combined);
