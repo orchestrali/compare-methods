@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-
+  console.log("consistency");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -731,7 +731,7 @@ function rounds(numBells) {
 }
 
 //convert row array to string
-function rowStr(row) {
+function rowstring(row) {
   let str = row.map(n => places[n-1]).join("");
   return str;
 }
@@ -913,7 +913,7 @@ function pnstring(pn) {
       nums = false;
     } else {
       if (nums) str += ".";
-      str += rowStr(e);
+      str += rowstring(e);
       nums = true;
     }
   });
