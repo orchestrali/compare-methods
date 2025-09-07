@@ -27,7 +27,40 @@ var method = [];
 var rowArray;
 
 $(function() {
+
+  getlists();
+  $("#container").svg({onLoad: (o) => {
+    svg = o;
+    svg.configure({xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", width: 0, height: 0});
+  }});
+
+  //nav toggle
+  $("#nav-options").click(function() {
+    $("#nav-options ul").slideToggle(600, "swing");
+    $(".arrow").toggleClass("rotate");
+  });
+
+  $(".stage").change(stagechange);
+
+  $(".lookupstrat").change(changestrategy);
   
+  $(".placeNotation").on("keyup", pnkeyup);
+
+  $('.methodClass').change(classchange);
+  $(".methodName").click(methodnameclick);
+  //when a method in the dropdown list is clicked on, make it the methodName value and hide the list
+  $(".methodList").on("click", "li", function(e) {
+    //console.log('method clicked 1');
+    let list = $(this).parent().attr("id");
+    let which = list.slice(list.length-1);
+    $("#methodName"+which).val($(this).text());
+    $("#methodList"+which+" li").hide();
+    $(this).siblings().detach();
+    e.stopPropagation();
+  });
+  $(".methodName").on("keyup", methodnamekeyup);
+
+  $("#submit").on("click", submitform);
 });
 
 
@@ -588,13 +621,18 @@ function resultsrouter(q1, q2) {
       //do the stuff here!!!
       let huntpp = [];
       let pp;
+      let pns = [];
       for (let i = 0; i < 2; i++) {
         pp = bellplaces(rowarr[i].map(o => o.bells), huntb);
         huntpp.push(rowstring(pp));
+        pns.push(method[i].plainPN);
       }
       if (huntpp[0] === huntpp[1]) {
         //continue doing stuff
-        
+        if ($('input[name="methodabove"]').val() === "two") pns.reverse();
+        let combined = combinepn(...pns, pp);
+        $("#container").append(`<h4>Success?</h4>`);
+        console.log(combined);
       } else {
         let text = "hunt paths don't match";
         $("#container").append(`<h4>${text}</h4>`);
