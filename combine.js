@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("tricky!");
+  console.log("also tricky!");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -634,6 +634,8 @@ function resultsrouter(q1, q2) {
         let combined = combinepn(pns[0], pns[1], pp);
         $("#container").append(`<h4>Success?</h4>`);
         console.log(combined);
+        let m = findbypn(combined, Math.max(method[0].stage, method[1].stage));
+        if (m) console.log(m.name);
       } else {
         let text = "hunt paths don't match";
         $("#container").append(`<h4>${text}</h4>`);
@@ -1003,7 +1005,8 @@ function combinepn(above, below, huntpp) {
       let change = [];
       if (b != "x") {
         b.forEach(n => {
-          if (n < min) change.push(n);
+          //if it's equal the treble is making a place
+          if (n <= min) change.push(n);
         });
       }
       if (a != "x") {
