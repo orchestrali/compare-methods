@@ -27,7 +27,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("show method");
+  console.log("typo");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -673,7 +673,7 @@ function combinationrouter(pn) {
   }
   $("#container").append(`<h4>${title}</h4>`);
   let rowarr = buildRows(rounds(n), pn, 1);
-  rowarr.unshift({rowNum: 0, bells: rounds(m.stage)});
+  rowarr.unshift({rowNum: 0, bells: rounds(n)});
   $("#container").append(`<p>Leadhead: ${rowstring(rowarr[rowarr.length-1].bells)}</p>`);
 
   let width = n*16+38;
