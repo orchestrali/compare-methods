@@ -202,49 +202,20 @@
         <div class="line"></div>
         <div id="gridopts" class="type">
           <h3>
-            Display options
+            Which way around
           </h3>
-          <fieldset class="borderless" id="gridtype">
+          <fieldset class="borderless" id="methodabove">
             <legend class="bold">
-              Display as:
+              Method above:
             </legend>
             <ul>
-              <li><label><input type="radio" name="gridtype" value="gridline" checked />line(s)</label></li>
-              <li><label><input type="radio" name="gridtype" value="gridgrid" />grid</label></li>
+              <li><label><input type="radio" name="methodabove" value="one" checked />Method 1</label></li>
+              <li><label><input type="radio" name="methodabove" value="two" />Method 2</label></li>
             </ul>
           </fieldset>
           
-          <div class="gridtype" id="gridline">
-            <div>
-              <label><input type="checkbox" checked id="show-nums" name="numbers" value="show" />Show numbers</label>
-            </div>
-            <div>
-              <label for="blueBell">
-                Draw path for bell:
-              </label>
-              <select id="blueBell" name="blueBell" class="blueBell">
-      
-              </select>
-            </div>
-            <!--<div>
-              <label>
-                <input type="checkbox" id="describe" name="describe" value="show" />Show description of the blue line
-              </label>
-            </div>-->
-          </div>
-          <div class="gridtype hidden" id="gridgrid">
-            <fieldset class="borderless">
-              <legend>Draw working bells:</legend>
-              <ul>
-                <li>
-                  <label><input type="radio" name="gridcolors" value="0" />same color</label>
-                </li>
-                <li>
-                  <label><input type="radio" name="gridcolors" value="colors" checked />different colors</label>
-                </li>
-              </ul>
-            </fieldset>
-          </div>
+          
+          
                 
         </div>
         <button type="button" id="submit">Submit</button>
@@ -260,6 +231,6 @@
   crossorigin="anonymous"></script>
     <script src="jquery.svg.js"></script>
     <script src="jquery.svgdom.js"></script>
-    <script src="script.js"></script>
+    <script src="combine.js"></script>
   </body>
 </html>
