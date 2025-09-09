@@ -27,13 +27,13 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("test");
+  console.log("order");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
     svg.configure({xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", width: 0, height: 0});
   }});
-  alisontest();
+  
 
   //nav toggle
   $("#nav-options").click(function() {
@@ -77,6 +77,7 @@ function getlists() {
       $.get("methods.json", function(arr) {
         bigmethodarr = arr;
         console.log("lists retrieved");
+        alisontest();
       });
       
     });
