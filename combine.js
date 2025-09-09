@@ -1179,7 +1179,7 @@ function buildgridpaths(n,hunts,color) {
 
 //weird test thingy
 function alisontest() {
-  let options = [["x","12"],["12","x"],["38","18"],[];
+  
   let crow = bigmethodarr.find(m => m.name === "Crow Surprise Major");
   let treblep = [1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8,8,7,8,7,6,5,6,5,4,3,4,3,2,1,2,1,1];
   let pnabove = buildhalfpn(crow.plainPN, "above", treblep);
