@@ -27,12 +27,13 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("typo");
+  console.log("test");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
     svg.configure({xmlns: "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", width: 0, height: 0});
   }});
+  alisontest();
 
   //nav toggle
   $("#nav-options").click(function() {
@@ -1017,6 +1018,29 @@ function bellplaces(rowarr, b) {
   return pp;
 }
 
+//pn, above or below
+function buildhalfpn(pn, loc, huntpp) {
+  let res = [];
+  for (let i = 0; i < pn.length; i++) {
+    if (pn[i] === "x") {
+      res.push("");
+    } else {
+      let nums = "";
+      let min = Math.min(huntpp[i], huntpp[i+1]);
+      let max = Math.max(huntpp[i], huntpp[i+1]);
+      pn[i].forEach(n => {
+        if (loc === "below" && n < min) {
+          nums += places[n-1];
+        } else if (loc === "above" && n > max) {
+          nums += places[n-1];
+        }
+      });
+      res.push(nums);
+    }
+  }
+  return res;
+}
+
 
 function combinepn(above, below, huntpp) {
   let res = [];
@@ -1045,6 +1069,19 @@ function combinepn(above, below, huntpp) {
     }
   }
   return res;
+}
+
+//convert pn string to either "x" or array of bell numbers
+function convertpn(str) {
+  if (str === "x") {
+    return "x";
+  } else {
+    return str.split("").map(bellnum);
+  }
+}
+
+function convertpna(e) {
+  return e === "x" ? e : rowstring(e);
 }
 
 
@@ -1139,3 +1176,44 @@ function buildgridpaths(n,hunts,color) {
   });
   return arr;
 }
+
+//weird test thingy
+function alisontest() {
+  let options = [["x","12"],["12","x"],["38","18"],[];
+  let crow = bigmethodarr.find(m => m.name === "Crow Surprise Major");
+  let treblep = [1,2,1,2,3,4,3,4,5,6,5,6,7,8,7,8,8,7,8,7,6,5,6,5,4,3,4,3,2,1,2,1,1];
+  let pnabove = buildhalfpn(crow.plainPN, "above", treblep);
+  let methods = [];
+  bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && (m.name.includes("Surprise") || m.name.includes("Delight")) && m.name != "Crow Surprise Major").forEach(m => {
+    let pn = buildhalfpn(m.plainPN, "above", treblep);
+    if (pn.every((s,i) => s === pnabove[i])) {
+      methods.push(m);
+    }
+  });
+  console.log(methods.length);
+  let ii = [16,19,20,23,24,27,28];
+  let res = {};
+  methods.forEach(m => {
+    let start = rounds(8);
+    let lead = buildRows(start, m.plainPN, 1);
+    let order = [];
+    for (let i = 0; i < ii.length; i++) {
+      let row = lead[ii[i]];
+      let b = row.bells[7-i];
+      order.push(b);
+    }
+    let ostr = order.join("");
+    if (res[ostr]) {
+      res[ostr].push(m.name);
+    } else {
+      res[ostr] = [m.name];
+    }
+  });
+  console.log(res);
+}
+
+
+
+
+
+
