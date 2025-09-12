@@ -5,6 +5,7 @@ var stages;
 //sorted list of method names
 var methodNameList;
 //full method collection
+//keys: stage, name (title), plain, class, leadLength, leadHeadCode, hunts, pbOrder, plainPN
 var bigmethodarr;
 //holder for jquery/svg functions
 var svg;
@@ -77,7 +78,7 @@ function getlists() {
       $.get("methods.json", function(arr) {
         bigmethodarr = arr;
         console.log("lists retrieved");
-        alisontest();
+        alisontestroyal();
       });
       
     });
@@ -1176,6 +1177,34 @@ function buildgridpaths(n,hunts,color) {
     return p;
   });
   return arr;
+}
+
+
+
+function alisontestroyal() {
+  let res = {};
+  let ii = [0,3,4,7,8,11,12,15,16];
+  let count = 0;
+  bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1).forEach(m => {
+    count++;
+    let start = rounds(10);
+    let lead = buildRows(start, m.plainPN, 1);
+    let order = [];
+    for (let i = 0; i < ii.length; i++) {
+      let row = lead[ii[i]];
+      let b = row.bells[i];
+      order.push(b);
+    }
+    let ostr = rowstring(order);
+    if (res[ostr]) {
+      res[ostr].push(m.name);
+    } else {
+      res[ostr] = [m.name];
+    }
+  });
+  for (let key in res) {
+    console.log(key + ": " + res[key].length);
+  }
 }
 
 //weird test thingy
