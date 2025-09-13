@@ -1202,6 +1202,8 @@ function alisontestroyal() {
       res[ostr] = [m.name];
     }
   });
+  console.log(count + " methods analyzed");
+  console.log(Object.keys(res).length + " orders");
   for (let key in res) {
     console.log(key + ": " + res[key].length);
   }
