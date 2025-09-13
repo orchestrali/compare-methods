@@ -28,7 +28,7 @@ var method = [];
 var rowArray;
 
 $(function() {
-  console.log("order");
+  console.log("above and below");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -1183,6 +1183,7 @@ function buildgridpaths(n,hunts,color) {
 
 function alisontestroyal() {
   let res = {};
+  let resbelow = {};
   let restitles = {};
   let ii = [0,3,4,7,8,11,12,15,16];
   let count = 0;
@@ -1193,6 +1194,7 @@ function alisontestroyal() {
     let lead = buildRows(start, m.plainPN, 1);
     let treblep = lead.map(r => r.bells.indexOf(1)+1);
     let pnabove = pnstring(buildhalfpn(m.plainPN, "above", treblep));
+    let pnbelow = pnstring(buildhalfpn(m.plainPN, "below", treblep));
     let order = [];
     for (let i = 0; i < ii.length; i++) {
       let row = lead[ii[i]];
@@ -1201,20 +1203,24 @@ function alisontestroyal() {
     }
     let ostr = rowstring(order);
     if (res[ostr]) {
-      if (!res[ostr].includes(pnabove)) {
-        res[ostr].push(pnabove);
-        restitles[ostr].push(m.name);
+      if (!res[ostr].above.includes(pnabove)) {
+        res[ostr].above.push(pnabove);
+        res[ostr].titlesa.push(m.name);
       }
+      if (!res[ostr].below.includes(pnbelow)) {
+        res[ostr].below.push(pnbelow);
+        res[ostr].titlesb.push(m.name);
+      }
+      res[ostr].count++;
     } else {
-      res[ostr] = [pnabove];
-      restitles[ostr] = [m.name];
+      res[ostr] = {above: [pnabove], below: [pnbelow], titlesa: [m.name], titlesb: [m.name], count: 1};
     }
   });
   console.log(count + " methods analyzed");
   console.log(Object.keys(res).length + " orders");
   for (let key in res) {
-    console.log(key + ": " + res[key].length);
-    if (res[key].length > 1) console.log(restitles[key]);
+    console.log(key + ": " + res[key].count + " methods");
+    if (res[key].count > 1) console.log(res[key]);
   }
 }
 
