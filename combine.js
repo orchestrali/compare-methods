@@ -1025,19 +1025,19 @@ function buildhalfpn(pn, loc, huntpp) {
   let res = [];
   for (let i = 0; i < pn.length; i++) {
     if (pn[i] === "x") {
-      res.push("");
+      res.push("x");
     } else {
-      let nums = "";
+      let nums = [];
       let min = Math.min(huntpp[i], huntpp[i+1]);
       let max = Math.max(huntpp[i], huntpp[i+1]);
       pn[i].forEach(n => {
         if (loc === "below" && n < min) {
-          nums += places[n-1];
+          nums.push(n);
         } else if (loc === "above" && n > max) {
-          nums += places[n-1];
+          nums.push(n);
         }
       });
-      res.push(nums);
+      res.push(nums.length > 0 ? nums : "x");
     }
   }
   return res;
@@ -1183,6 +1183,7 @@ function buildgridpaths(n,hunts,color) {
 
 function alisontestroyal() {
   let res = {};
+  let restitles = {};
   let ii = [0,3,4,7,8,11,12,15,16];
   let count = 0;
   let methods = bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
@@ -1190,6 +1191,8 @@ function alisontestroyal() {
     count++;
     let start = rounds(10);
     let lead = buildRows(start, m.plainPN, 1);
+    let treblep = lead.map(r => r.bells.indexOf(1)+1);
+    let pnabove = pnstring(buildhalfpn(m.plainPN, "above", treblep));
     let order = [];
     for (let i = 0; i < ii.length; i++) {
       let row = lead[ii[i]];
@@ -1198,16 +1201,20 @@ function alisontestroyal() {
     }
     let ostr = rowstring(order);
     if (res[ostr]) {
-      res[ostr].push(m.name);
+      if (!res[ostr].includes(pnabove)) {
+        res[ostr].push(pnabove);
+        restitles[ostr].push(m.name);
+      }
     } else {
-      res[ostr] = [m.name];
+      res[ostr] = [pnabove];
+      restitles[ostr] = [m.name];
     }
   });
   console.log(count + " methods analyzed");
   console.log(Object.keys(res).length + " orders");
   for (let key in res) {
     console.log(key + ": " + res[key].length);
-    if (res[key].length > 1) console.log(res[key]);
+    if (res[key].length > 1) console.log(restitles[key]);
   }
 }
 
@@ -1220,6 +1227,7 @@ function alisontest() {
   let methods = [];
   bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && (m.name.includes("Surprise") || m.name.includes("Delight")) && m.name != "Crow Surprise Major").forEach(m => {
     let pn = buildhalfpn(m.plainPN, "above", treblep);
+    //won't work anymore
     if (pn.every((s,i) => s === pnabove[i])) {
       methods.push(m);
     }
