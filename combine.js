@@ -1193,6 +1193,7 @@ function alisontestroyal() {
     let start = rounds(10);
     let lead = buildRows(start, m.plainPN, 1);
     let treblep = lead.map(r => r.bells.indexOf(1)+1);
+    treblep.unshift(1);
     let pnabove = pnstring(buildhalfpn(m.plainPN, "above", treblep));
     let pnbelow = pnstring(buildhalfpn(m.plainPN, "below", treblep));
     let order = [];
