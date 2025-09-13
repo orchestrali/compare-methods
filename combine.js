@@ -1185,7 +1185,8 @@ function alisontestroyal() {
   let res = {};
   let ii = [0,3,4,7,8,11,12,15,16];
   let count = 0;
-  bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1).forEach(m => {
+  let methods = bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
+  methods.forEach(m => {
     count++;
     let start = rounds(10);
     let lead = buildRows(start, m.plainPN, 1);
@@ -1206,6 +1207,7 @@ function alisontestroyal() {
   console.log(Object.keys(res).length + " orders");
   for (let key in res) {
     console.log(key + ": " + res[key].length);
+    if (res[key].length > 1) console.log(res[key]);
   }
 }
 
