@@ -380,7 +380,7 @@ function getMethods(methods, howMany) {
     methodSet.push(methods[methodNum]);
     methods.splice(methodNum, 1);
     n++
-  } while (n < howMany && methods.length > 0)
+  } while (n < howMany && methods.length > 0);
     return methodSet;
 }
 
@@ -409,27 +409,24 @@ function removeItems(value,n) {
   $("#methodList"+n+" li").css("display", "list-item");
 }
 
-//search json methodNames file, returns array of arrays with methods
+//search json methodNames file, returns array with methods
 function methodNames(stage, checkedClass) {
-  
+  let classMethods = [];
   if (checkedClass == "Plain") {
     var plainClasses = ["Bob", "Place"];
-    let classMethods = [];
-    for (var i = 0; i < plainClasses.length; i++) {
+    
+    for (let i = 0; i < plainClasses.length; i++) {
 
       let methods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == plainClasses[i]).methods;
-      for (var j = 0; j < methods.length; j++) {
-        classMethods.push(methods[j]);
-      }
+      classMethods.push(...methods);
     }
     //console.log("length of classMethods", classMethods.length);
-    return classMethods;
+    
   } else {
-    let classMethods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == checkedClass).methods;
-  //console.log("length of classMethods", classMethods.length);
-    return classMethods;
+    classMethods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == checkedClass).methods;
+    
   }
-  
+  return classMethods;
 }
 
 function methodnamekeyup(event) {
@@ -457,11 +454,7 @@ function methodnamekeyup(event) {
     let stageName = getStageName(stage);
     
     //calculate number of methods in the class
-    let numArrays = methodList.length;
-    let numMethods = 0;
-    for (var i = 0; i < numArrays; ++i) {
-      numMethods += methodList[i].length;
-    }
+    let numMethods = methodList.length;
     
     //remove the message to pick stage and class
     $("li#warning"+num).remove();
@@ -476,7 +469,7 @@ function methodnamekeyup(event) {
     if (numMethods < 16) {
       for (var j = 0; j < numMethods; j++) {
         //chop off the stage name
-        let text = methodList[0][j].substring(0,methodList[0][j].length-1-stageName.length);
+        let text = methodList[j].substring(0,methodList[j].length-1-stageName.length);
         methods.push(text);
         if (checkname(text.toLowerCase(), value)) {
           numMatch++;
@@ -484,13 +477,11 @@ function methodnamekeyup(event) {
       }
     } else {
       //if there are ≥16 methods, make an array of those that match search
-      for (var j = 0; j < numArrays; ++j) {
-        for (var k = 0; k < methodList[j].length; ++k) {
-          let method = methodList[j][k].substring(0,methodList[j][k].length-1-stageName.length);
-          if (checkname(method.toLowerCase(), value)) {
-            methods.push(method);
-            numMatch++;
-          }
+      for (var k = 0; k < methodList.length; ++k) {
+        let method = methodList[k].substring(0,methodList[k].length-1-stageName.length);
+        if (checkname(method.toLowerCase(), value)) {
+          methods.push(method);
+          numMatch++;
         }
       }
     }
