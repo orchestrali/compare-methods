@@ -48,7 +48,7 @@ var blueBell;
 
 
 $(function(){
-  
+  console.log("silly");
   getlists();
   $("#container").svg({onLoad: (o) => {
     svg = o;
@@ -161,7 +161,7 @@ function stagechange(e) {
 //switch between method name or pn
 function changestrategy() {
   let id = this.id;
-  let num = id.slice(6);
+  let num = id.slice(-1);
   let prev = searches[id]+num;
   searches[id] = $("#"+id+" input:checked").val();
   let current = searches[id]+num;
@@ -380,7 +380,7 @@ function getMethods(methods, howMany) {
     methodSet.push(methods[methodNum]);
     methods.splice(methodNum, 1);
     n++
-  } while (n < howMany && methods.length > 0)
+  } while (n < howMany && methods.length > 0);
     return methodSet;
 }
 
@@ -409,27 +409,24 @@ function removeItems(value,n) {
   $("#methodList"+n+" li").css("display", "list-item");
 }
 
-//search json methodNames file, returns array of arrays with methods
+//search json methodNames file, returns array with methods
 function methodNames(stage, checkedClass) {
-  
+  let classMethods = [];
   if (checkedClass == "Plain") {
     var plainClasses = ["Bob", "Place"];
-    let classMethods = [];
-    for (var i = 0; i < plainClasses.length; i++) {
+    
+    for (let i = 0; i < plainClasses.length; i++) {
 
       let methods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == plainClasses[i]).methods;
-      for (var j = 0; j < methods.length; j++) {
-        classMethods.push(methods[j]);
-      }
+      classMethods.push(...methods);
     }
     //console.log("length of classMethods", classMethods.length);
-    return classMethods;
+    
   } else {
-    let classMethods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == checkedClass).methods;
-  //console.log("length of classMethods", classMethods.length);
-    return classMethods;
+    classMethods = methodNameList.find(o => o.stage == stage).classes.find(o => o.class == checkedClass).methods;
+    
   }
-  
+  return classMethods;
 }
 
 function methodnamekeyup(event) {
@@ -457,11 +454,7 @@ function methodnamekeyup(event) {
     let stageName = getStageName(stage);
     
     //calculate number of methods in the class
-    let numArrays = methodList.length;
-    let numMethods = 0;
-    for (var i = 0; i < numArrays; ++i) {
-      numMethods += methodList[i].length;
-    }
+    let numMethods = methodList.length;
     
     //remove the message to pick stage and class
     $("li#warning"+num).remove();
@@ -476,7 +469,7 @@ function methodnamekeyup(event) {
     if (numMethods < 16) {
       for (var j = 0; j < numMethods; j++) {
         //chop off the stage name
-        let text = methodList[0][j].substring(0,methodList[0][j].length-1-stageName.length);
+        let text = methodList[j].substring(0,methodList[j].length-1-stageName.length);
         methods.push(text);
         if (checkname(text.toLowerCase(), value)) {
           numMatch++;
@@ -484,13 +477,11 @@ function methodnamekeyup(event) {
       }
     } else {
       //if there are ≥16 methods, make an array of those that match search
-      for (var j = 0; j < numArrays; ++j) {
-        for (var k = 0; k < methodList[j].length; ++k) {
-          let method = methodList[j][k].substring(0,methodList[j][k].length-1-stageName.length);
-          if (checkname(method.toLowerCase(), value)) {
-            methods.push(method);
-            numMatch++;
-          }
+      for (var k = 0; k < methodList.length; ++k) {
+        let method = methodList[k].substring(0,methodList[k].length-1-stageName.length);
+        if (checkname(method.toLowerCase(), value)) {
+          methods.push(method);
+          numMatch++;
         }
       }
     }
@@ -631,7 +622,7 @@ function submitform() {
     if (i1 > -1) {
       query1[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
     } else if (i2 > -1) {
-      query2[key[0].slice(0,-1)] = i1 === 0 ? Number(key[1]) : key[1];
+      query2[key[0].slice(0,-1)] = i2 === 0 ? Number(key[1]) : key[1];
     } else {
       if (key[1] === "colors") {
         queryobj.gridcolors = true;
@@ -675,7 +666,7 @@ function resultsrouter(q1, q2) {
   
   
   //do stuff with it
-  
+  console.log(titles);
   
   if (titles[0] && titles[1]) {
     //console.log(method.hunts);
@@ -707,18 +698,22 @@ function routermethod(obj) {
 }
 
 function routerpn(obj) {
+  console.log("dealing with pn");
   let res = parsePN(obj.placeNotation, obj.stage);
   let title;
-  //console.log(res);
+  console.log(res);
   if (res[0]) {
     //error
+    console.log("error with pn");
   } else {
     let pn = res[1];
     let m = findbypn(pn, obj.stage);
     if (m) {
+      //console.log("pn is known method");
       method.push(m);
-      title = method.name;
+      title = m.name;
     } else {
+      //console.log("pn is not known");
       method.push({
         stage: obj.stage,
         leadLength: pn.length,
@@ -919,7 +914,7 @@ function handletitles(titles) {
   res.forEach(a => {
     if (a[0].length > 30) {
       //dunno actual threshhold or quite what to do about it
-      let words = a[0].split(" ");
+      let words = a.shift().split(" ");
       let str = words.pop();
       let l = words.length;
       while (l > 0) {
@@ -965,7 +960,8 @@ function drawgrids(titles) {
         let st = method[j].stage;
         if ((st < 7 && current.length > 22) || current.length > 29) {
           let w = j === 0 ? w1 : w2;
-          style.style = "lengthAdjust: spacingAndGlyphs; textLength: "+(w+40);
+          style.lengthAdjust = "spacingAndGlyphs";
+          style.textLength = w+40;
         }
         svg.text(text, x, i*16-1, current, style);
       }
@@ -1167,7 +1163,7 @@ function pnNumAbbr(tokens, pnstage) {
       }
       
       //if the value ends with the opposite quality from the stage, add stage to end
-      if (stage%2 != numArr[numArr.length-1] % 2) {
+      if (pnstage%2 != numArr[numArr.length-1] % 2) {
         numArr.push(pnstage);
       }
       t.value = numArr;
