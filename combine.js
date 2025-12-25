@@ -78,7 +78,9 @@ function getlists() {
       $.get("methods.json", function(arr) {
         bigmethodarr = arr;
         console.log("lists retrieved");
-        alisontestroyal();
+        //alisontestroyal();
+        let methods = bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && m.class === "Treble Bob" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
+        console.log(sortbytreblepass(methods));
       });
       
     });
@@ -1170,7 +1172,42 @@ function buildgridpaths(n,hunts,color) {
   return arr;
 }
 
+function findtreblepass(method) {
+  let start = rounds(method.stage);
+  let lead = buildRows(start, method.plainPN, 1);
+  //indices of rows to get a bell that passed the treble
+  let ii = [];
+  let treblepath = lead.map(o => o.bells.indexOf(1));
+  let treblepp = [];
+  for (let i = 1; i < method.stage; i++) {
+    if (treblepath.includes(i)) treblepp.push(i);
+  }
+  for (let j = 0; j < treblepp.length; j++) {
+    let i = treblepath.indexOf(treblepp[j]);
+    ii.push(i);
+  }
+  let order = [];
+  for (let i = 0; i < ii.length; i++) {
+    let row = lead[ii[i]];
+    let b = row.bells[i];
+    order.push(b);
+  }
+  return order;
+}
 
+//group methods based on the order bells pass the treble
+function sortbytreblepass(methods) {
+  let res = {};
+  methods.forEach(m => {
+    let order = rowstring(findtreblepass(m));
+    if (res[order]) {
+      res[order].push(m.name);
+    } else {
+      res[order] = [m.name];
+    }
+  });
+  return res;
+}
 
 function alisontestroyal() {
   let res = {};
