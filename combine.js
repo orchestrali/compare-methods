@@ -79,7 +79,7 @@ function getlists() {
         bigmethodarr = arr;
         console.log("lists retrieved");
         //alisontestroyal();
-        let methods = bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && m.class === "Treble Bob" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
+        let methods = bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
         console.log(sortbytreblepass(methods));
       });
       
