@@ -81,6 +81,7 @@ function getlists() {
         //alisontestroyal();
         let methods = bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.leadHeadCode && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
         console.log(sortbybuddies(methods, "front"));
+        console.log(testplaincourse(methods, /^3456/));
       });
       
     });
@@ -1207,6 +1208,27 @@ function buildgridpaths(n,hunts,color) {
     return p;
   });
   return arr;
+}
+
+function testplaincourse(methods, test) {
+  let match = [];
+  methods.forEach(m => {
+    let start = rounds(m.stage);
+    let rowarr = [];
+    let last;
+    let lasta = start;
+    do {
+      let lead = buildRows(lasta, m.plainPN, 1);
+      lead.forEach(o => rowarr.push(o.bells));
+      lasta = rowarr[rowarr.length-1];
+      last = rowstring(lasta);
+    } while (last != rowstring(start));
+    rowarr = rowarr.map(r => rowstring(r));
+    if (rowarr.find(r => test.test(r))) {
+      match.push(m.name);
+    }
+  });
+  return match;
 }
 
 //group methods by who the tenor meets at front or back
