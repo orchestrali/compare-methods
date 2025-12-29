@@ -79,8 +79,8 @@ function getlists() {
         bigmethodarr = arr;
         console.log("lists retrieved");
         //alisontestroyal();
-        let methods = bigmethodarr.filter(m => m.stage === 8 && m.leadLength === 32 && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
-        console.log(sortbytreblepass(methods));
+        let methods = bigmethodarr.filter(m => m.stage === 10 && m.leadLength === 40 && m.leadHeadCode && m.class === "Delight" && m.pbOrder.length === 1 && m.hunts[0] === 1 && m.hunts.length === 1);
+        console.log(sortbybuddies(methods, "front"));
       });
       
     });
@@ -762,6 +762,30 @@ function rowstring(row) {
   return str;
 }
 
+//rowarr needs to be array of arrays of numbers
+function findtenorbuddies(rowarr, stage) {
+  //who does the tenor meet at front and back?
+  let aa = {
+    back: [],
+    front: []
+  };
+  let last;
+  for (let i = 0; i < rowarr.length; i++) {
+    let row = rowarr[i];
+    let p = row.indexOf(stage);
+    if ([0,stage-1].includes(p)) {
+      if (last) {
+        let bell = last[p];
+        let arr = p === 0 ? aa.front : aa.back;
+        if (!arr.includes(bell)) arr.push(bell);
+      }
+    } else {
+      last = row;
+    }
+  }
+  return aa;
+}
+
 
 //categorize tokens in supposed place notation
 function pnlexer(pn, pnstage) {
@@ -1170,6 +1194,32 @@ function buildgridpaths(n,hunts,color) {
     return p;
   });
   return arr;
+}
+
+//group methods by who the tenor meets at front or back
+function sortbybuddies(methods, loc) {
+  let res = {};
+  methods.forEach(m => {
+    let start = rounds(m.stage);
+    let rowarr = [];
+    let last;
+    let lasta = start;
+    do {
+      let lead = buildRows(lasta, m.plainPN, 1);
+      lead.forEach(o => rowarr.push(o.bells));
+      lasta = rowarr[rowarr.length-1];
+      last = rowstring(lasta);
+    } while (last != rowstring(start));
+
+    let buddies = findtenorbuddies(rowarr, m.stage);
+    let key = rowstring(buddies[loc]);
+    if (res[key]) {
+      res[key].push(m.name);
+    } else {
+      res[key] = [m.name];
+    }
+  });
+  return res;
 }
 
 function findtreblepass(method) {
