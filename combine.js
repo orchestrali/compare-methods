@@ -770,17 +770,27 @@ function findtenorbuddies(rowarr, stage) {
     front: []
   };
   let last;
+  let loc;
   for (let i = 0; i < rowarr.length; i++) {
     let row = rowarr[i];
     let p = row.indexOf(stage);
     if ([0,stage-1].includes(p)) {
+      loc = p === 0 ? "front" : "back";
       if (last) {
         let bell = last[p];
         let arr = p === 0 ? aa.front : aa.back;
         if (!arr.includes(bell)) arr.push(bell);
       }
+    } else if (loc && [1,stage-2].includes(p)) {
+      let q = p === 1 ? 0 : stage-1;
+      let bell = row[q];
+      let arr = p === 1 ? aa.front : aa.back;
+      if (!arr.includes(bell)) arr.push(bell);
+      last = row;
+      loc = null;
     } else {
       last = row;
+      loc = null;
     }
   }
   for (let key in aa) {
