@@ -783,6 +783,9 @@ function findtenorbuddies(rowarr, stage) {
       last = row;
     }
   }
+  for (let key in aa) {
+    aa[key].sort((a,b) => a-b);
+  }
   return aa;
 }
 
@@ -1212,7 +1215,7 @@ function sortbybuddies(methods, loc) {
     } while (last != rowstring(start));
 
     let buddies = findtenorbuddies(rowarr, m.stage);
-    let key = rowstring(buddies[loc]);
+    let key = rowstring(buddies[loc].filter(b => b != 1));
     if (res[key]) {
       res[key].push(m.name);
     } else {
